@@ -3,77 +3,115 @@ GRule = {}
 GRule.ToolModes = {}
 GRule.CPoints = {}
 
+-- Conversion table. All the formulas below are based FROM the inche TO [unit here]
 GRule.UnitConversion = {
 	["unit"] = {
 		idx = 1,
 		name = "Source Unit (u)",
 		sname = "unit",
 		lname = "source units",
-		convformula = function(value) return value end,
+		convformula = function(value) return value end, -- no changes between playerscale and mapscale.
 	},
 	["inche"] = {
 		idx = 2,
 		name = "Inche (inch)",
 		sname = "inch",
 		lname = "inches",
-		convformula = function(value) return value end, -- To tell you that inches are EQUAL TO units sources
+		convformula = function(value) return value end, -- To tell you that inches are EQUAL TO units sources. However, not the case for map scale
+	},
+	["feet"] = {
+		idx = 3,
+		name = "Foot (ft)",
+		sname = "ft",
+		lname = "feet",
+		convformula = function(value) return value / 12 end,
 	},
 	["millimeter"] = {
-		idx = 3,
+		idx = 4,
 		name = "Millimeter (mm)",
 		sname = "mm",
 		lname = "millimeters",
 		convformula = function(value) return value * 25.4 end,
 	},
 	["centimeter"] = {
-		idx = 4,
+		idx = 5,
 		name = "Centimeter (cm)",
 		sname = "cm",
 		lname = "centimeters",
 		convformula = function(value) return value * 2.54 end,
 	},
 	["decimeter"] = {
-		idx = 5,
+		idx = 6,
 		name = "Decimeter (dm)",
 		sname = "dm",
 		lname = "decimeters",
 		convformula = function(value) return value / 3.937 end,
 	},
 	["meter"] = {
-		idx = 6,
+		idx = 7,
 		name = "Meter (m)",
 		sname = "m",
 		lname = "meters",
 		convformula = function(value) return value / 39.37 end,
 	},
 	["kilometer"] = {
-		idx = 7,
+		idx = 8,
 		name = "Kilometer (km)",
 		sname = "km",
 		lname = "kilometers",
 		convformula = function(value) return value / 39370 end,
 	},
 	["megameter"] = {
-		idx = 8,
+		idx = 9,
 		name = "Megameter (Mm)",
 		sname = "Mm",
 		lname = "megameters",
 		convformula = function(value) return value / 39370000 end,
 	},
 	["gigameter"] = {
-		idx = 9,
+		idx = 10,
 		name = "Gigameter (Gm)",
 		sname = "Gm",
 		lname = "gigameters",
 		convformula = function(value) return value / 39370000000 end,
 	},
 	["terameter"] = {
-		idx = 10,
+		idx = 11,
 		name = "Terameter (Tm)",
 		sname = "Tm",
 		lname = "terameters",
 		convformula = function(value) return value / 39370000000000. end,
 	},
+	["astrounit"] = {
+		idx = 12,
+		name = "Astronomical Unit (AU)",
+		sname = "AU",
+		lname = "astronomical units",
+		convformula = function(value) return value / 5890000000000 end,
+	},
+	["lightyear"] = {
+		idx = 13,
+		name = "Light-year (ly)",
+		sname = "ly",
+		lname = "light-year",
+		convformula = function(value) return value / 39370000000000. end,
+	},
+	["mile"] = {
+		idx = 14,
+		name = "Mile (mi)",
+		sname = "mi",
+		lname = "Miles",
+		convformula = function(value) return value / 63360 end,
+	},
+	["naumile"] = {
+		idx = 15,
+		name = "Nautic Mile (nm)",
+		sname = "nm",
+		lname = "Nautic Miles",
+		convformula = function(value) return value / 72910 end,
+	},
+
+--
 }
 do
 	local function IsReallyValidTable(tbl)

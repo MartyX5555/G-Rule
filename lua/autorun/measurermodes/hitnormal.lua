@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local Mode = {}
 
 Mode.id = "hitplane"

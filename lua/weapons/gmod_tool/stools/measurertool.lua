@@ -16,6 +16,7 @@ if CLIENT then
 
 	TOOL.Information = {
 
+		-- Honestly, i have no idea how this could go inside of the mode files.
 		-- Basic
 		{ name = "left_1", icon = "gui/lmb.png",  op = 0, stage = 0 },
 		{ name = "right_1", icon = "gui/rmb.png", op = 0, stage = 0 },
@@ -94,6 +95,10 @@ end
 do
 
 	function TOOL.BuildCPanel(panel)
+
+		local UnitConversion = GRule.UnitConversion
+		local ToolModes = GRule.ToolModes
+
 		panel:Help("#tool.measurertool.desc")
 
 		panel:CheckBox("Round measures", "measurertool_rounded")
@@ -115,7 +120,7 @@ do
 			local sortedArray = {}
 
 			-- Populate the array with elements containing both key and value pairs
-			for id, content in pairs(GRule.UnitConversion) do
+			for id, content in pairs(UnitConversion) do
 				table.insert(sortedArray, { id = id, content = content })
 			end
 
@@ -128,24 +133,24 @@ do
 			function combo:OnSelect( _, name, data )
 				SetClientData("unit", data)
 			end
-			--combo:SetValue(GRule.UnitConversion[GetClientInfo("unit")].name)
+			combo:SetValue(UnitConversion[GetClientInfo("unit")].name)
 
 		end
 		do
+
 			-- Rule Mode ComboBox
 			local modecombo = vgui.Create( "DComboBox" )
 			panel:AddItem(modecombo)
 
 			-- Populate the array with elements containing both key and value pairs
-			for id, data in pairs(GRule.ToolModes) do
+			for id, data in pairs(ToolModes) do
 				modecombo:AddChoice( data.name, id )
 			end
 			function modecombo:OnSelect( _, name, data )
 				GRule.CPoints = {}
 				SetClientData("mode", data)
 			end
-
-			--modecombo:SetValue(GRule.ToolModes[GetClientInfo("mode")].name)
+			modecombo:SetValue(ToolModes[GetClientInfo("mode")].name)
 
 		end
 	end
