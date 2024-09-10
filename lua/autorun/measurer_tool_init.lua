@@ -2,6 +2,7 @@ GRule = {}
 
 GRule.ToolModes = {}
 GRule.CPoints = {}
+GRule.HitNormals = {}
 
 -- Conversion table. All the formulas below are based FROM the inche TO [unit here]
 GRule.UnitConversion = {
@@ -167,6 +168,8 @@ end
 
 include("autorun/measurermodes/basic.lua")
 include("autorun/measurermodes/hitnormal.lua")
+include("autorun/measurermodes/poshitnormal.lua")
+
 
 
 

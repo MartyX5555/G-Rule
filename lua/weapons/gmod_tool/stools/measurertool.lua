@@ -24,6 +24,11 @@ if CLIENT then
 		--HitPlane
 		{ name = "left_2", icon = "gui/lmb.png",  op = 1, stage = 0 },
 
+		--HitPlane2
+		{ name = "left_3", icon = "gui/lmb.png",  op = 2, stage = 0 },
+		{ name = "right_3", icon = "gui/rmb.png", op = 2, stage = 0 },
+
+
 		{ name = "reload", icon = "gui/r.png" },
 
 	}
@@ -35,6 +40,10 @@ if CLIENT then
 	language.Add( "tool.measurertool.right_1", "Set the Point 2" )
 
 	language.Add( "tool.measurertool.left_2", "Set the Point to start the backtrace." )
+
+	language.Add( "tool.measurertool.left_3", "Set the Point 1 and fixed direction" )
+	language.Add( "tool.measurertool.right_3", "Set the Point 2 and Magnitude" )
+
 
 	language.Add( "tool.measurertool.reload", "Clear selection." )
 
