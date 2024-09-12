@@ -41,7 +41,7 @@ if CLIENT then
 
 	language.Add( "tool.measurertool.left_2", "Set the Point to start the backtrace." )
 
-	language.Add( "tool.measurertool.left_3", "Set the Point 1 and fixed direction" )
+	language.Add( "tool.measurertool.left_3", "Set the Point 1 and the Normal where the direction will be perpendicular to" )
 	language.Add( "tool.measurertool.right_3", "Set the Point 2 and Magnitude" )
 
 
@@ -96,7 +96,6 @@ function TOOL:Think()
 	local modedata = GRule.GetModeInfo(CMode)
 
 	if modedata.operation ~= self:GetOperation() then
-		print("NEW OPERATION!", modedata.operation, self:GetOperation() )
 		self:SetOperation(modedata.operation)
 	end
 end
@@ -111,10 +110,10 @@ do
 		panel:Help("#tool.measurertool.desc")
 
 		panel:CheckBox("Round measures", "measurertool_rounded")
-		panel:ControlHelp( "Rounds the distances" )
+		panel:ControlHelp( "Rounds the distances to whole numbers." )
 
 		panel:CheckBox("Map Scale", "measurertool_mapscale")
-		panel:ControlHelp( "Uses the hammer editor scale.")
+		panel:ControlHelp( "Uses the Architecture scale factor (1 unit = 0.75 inch)")
 
 		panel:CheckBox("Full name", "measurertool_longname")
 		panel:ControlHelp( "Should the measure unit be fully displayed or not?")

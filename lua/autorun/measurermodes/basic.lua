@@ -110,10 +110,21 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_BasicRendering", function()
 
 	-- Between 2 Points
 	do
+
 		local Point1 = GRule.CPoints[1]
 		local Point2 = GRule.CPoints[2]
 
 		if Point1 and Point2 then
+
+			if InfMap then
+				local ply = LocalPlayer()
+				local IPoint1, offset1 = InfMap.localize_vector(Point1)
+				local IPoint2, offset2 = InfMap.localize_vector(Point2)
+
+				Point1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
+				Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
+			end
+
 			CreateBasicRuleRect(Point1, Point2)
 		end
 	end

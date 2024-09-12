@@ -2,19 +2,17 @@ AddCSLuaFile()
 
 local Mode = {}
 
-Mode.id = "hitplane"
-Mode.name = "HitPlane - between 2 walls"
-Mode.desc = "The measure is performed between the position where you did hit, and a perpendicular generated position behind of it, where did hit."
-Mode.operation = 1
+Mode.id = "enttoent"
+Mode.name = "Entity to Entity"
+Mode.desc = "Entities are the points. Measures data are updated on the fly."
+Mode.operation = 3
 
-local function SendPosition(idx, PointPos, tool)
+local function SendPosition(idx, Entity, tool)
 
 	local data = {
 		Idx = idx,
 		Tool = tool,
-		PosX = PointPos.x,
-		PosY = PointPos.y,
-		PosZ = PointPos.z,
+		EntIdx = Entity:EntIndex(),
 	}
 
 	GRule.NetworkData(Mode.id, data, tool:GetOwner())
@@ -22,37 +20,35 @@ end
 
 function Mode.ReceivePosition(data)
 
-	local X = data.PosX
-	local Y = data.PosY
-	local Z = data.PosZ
 	local Idx = data.Idx
+	local Entity = ents.GetByIndex(data.EntIdx)
 
-	GRule.CPoints[Idx] = Vector(X, Y, Z)
-
+	GRule.CPoints[Idx] = Entity
 end
 
 function Mode.LeftClick(tool, trace)
-	local HitPos = trace.HitPos
 
-	local backtrace = util.TraceLine({
-		start = HitPos,
-		endpos = HitPos + trace.HitNormal * 1000000,
-		filter = function(ent) if ent:GetClass() ~= "player" then return true end return false end
-	})
-
-	SendPosition(1, HitPos, tool)
-	SendPosition(2, backtrace.HitPos, tool)
-
+	local Ent = trace.Entity
+	if IsValid(Ent) then
+		SendPosition(1, Ent, tool)
+	end
 end
 
 function Mode.RightClick(tool, trace)
+
+	local Ent = trace.Entity
+	if IsValid(Ent) then
+		SendPosition(2, Ent, tool)
+	end
 end
 
 function Mode.Reload(tool, trace)
-	GRule.CPoints = {}
+	tool.FirstEntity = nil
+	tool.SecondEntity = nil
 end
 
 function Mode.CPanelConfig(panel)
+
 end
 
 local function GetClientValue(convar)
@@ -103,31 +99,28 @@ local function CreateBasicRuleRect(Pos1, Pos2)
 		cam.End2D()
 
 		render.DrawLine(Pos1, Pos2, color_white, true )
-		RenderCross(Pos1, Color(0,167,6))
-		RenderCross(Pos2, Color(255,0,0))
+		RenderCross(Pos1, Color(0,83,167))
+		RenderCross(Pos2, Color(255,150,0,255))
 end
 
-hook.Remove("PostDrawTranslucentRenderables", "GRule_HitPlaneRendering")
-hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlaneRendering", function()
+hook.Remove("PostDrawTranslucentRenderables", "GRule_MultipleRendering")
+hook.Add("PostDrawTranslucentRenderables", "GRule_MultipleRendering", function()
 	if GetClientInfo("mode") ~= Mode.id then return end
 
 	-- Between 2 Points
 	do
-		local Point1 = GRule.CPoints[1]
-		local Point2 = GRule.CPoints[2]
+		local Ent1 = GRule.CPoints[1]
+		local Ent2 = GRule.CPoints[2]
 
-		if Point1 and Point2 then
+		if IsValid(Ent1) and IsValid(Ent2) then
+			local Point1 = Ent1:GetPos()
+			local Point2 = Ent2:GetPos()
 
-			if InfMap then
-				local ply = LocalPlayer()
-				local IPoint1, offset1 = InfMap.localize_vector(Point1)
-				local IPoint2, offset2 = InfMap.localize_vector(Point2)
+			print(Point2)
 
-				Point1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
-				Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
+			if Point1 and Point2 then
+				CreateBasicRuleRect(Point1, Point2)
 			end
-
-			CreateBasicRuleRect(Point1, Point2)
 		end
 	end
 end)

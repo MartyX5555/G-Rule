@@ -3,19 +3,20 @@ GRule = {}
 GRule.ToolModes = {}
 GRule.CPoints = {}
 GRule.HitNormals = {}
+GRule.Timers = {}
 
 -- Conversion table. All the formulas below are based FROM the inche TO [unit here]
 GRule.UnitConversion = {
 	["unit"] = {
 		idx = 1,
-		name = "Source Unit (u)",
+		name = "Hammer Unit (unit)",
 		sname = "unit",
-		lname = "source units",
+		lname = "hammer units",
 		convformula = function(value) return value end, -- no changes between playerscale and mapscale.
 	},
 	["inche"] = {
 		idx = 2,
-		name = "Inche (inch)",
+		name = "Inch (inch)",
 		sname = "inch",
 		lname = "inches",
 		convformula = function(value) return value end, -- To tell you that inches are EQUAL TO units sources. However, not the case for map scale
@@ -169,6 +170,7 @@ end
 include("autorun/measurermodes/basic.lua")
 include("autorun/measurermodes/hitnormal.lua")
 include("autorun/measurermodes/poshitnormal.lua")
+include("autorun/measurermodes/multiple.lua")
 
 
 

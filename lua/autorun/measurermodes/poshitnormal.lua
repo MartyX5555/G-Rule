@@ -3,7 +3,7 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "hitplane2"
-Mode.name = "HitPlane - Rect"
+Mode.name = "HitPlane - Normalized Rect"
 Mode.desc = "The measure is done between point 1 and point 2, in one direction which is perpendicular to the normal of the 1st point."
 Mode.operation = 2
 
@@ -120,6 +120,20 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function(
 		local Point2 = GRule.CPoints[2]
 		local Normal1 = GRule.HitNormals[1]
 
+		if InfMap then
+
+			local ply = LocalPlayer()
+			if Point1 then
+				local IPoint1, offset1 = InfMap.localize_vector(Point1)
+				Point1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
+			end
+
+			if Point2 then
+				local IPoint2, offset2 = InfMap.localize_vector(Point2)
+				Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
+			end
+		end
+
 		if Point1 and Normal1 then
 			local size = Vector(50,50,0)
 			render.SetMaterial( mat )
@@ -127,6 +141,7 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function(
 		end
 
 		if Point1 and Point2 and Normal1 then
+
 			-- Convert the second point to local space relative to the first point
 			local localVec = WorldToLocal(Point2, Angle(), Point1, Normal1:Angle())
 			local newLVec = localVec * Vector(1,0,0)
