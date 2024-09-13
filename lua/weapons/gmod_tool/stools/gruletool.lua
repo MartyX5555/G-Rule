@@ -1,5 +1,5 @@
 TOOL.Category = "Construction"
-TOOL.Name = "#tool.measurertool.name"
+TOOL.Name = "#tool.gruletool.name"
 
 TOOL.ClientConVar["mode"] = "basic"
 TOOL.ClientConVar["unit"] = "unit"
@@ -34,30 +34,30 @@ if CLIENT then
 
 	}
 
-	language.Add( "tool.measurertool.name", "Measurer Tool" )
-	language.Add( "tool.measurertool.desc", "A tool used for measuring purposes." )
+	language.Add( "tool.gruletool.name", "G-Rule" )
+	language.Add( "tool.gruletool.desc", "A tool used for measuring purposes." )
 
-	language.Add( "tool.measurertool.left_1", "Set the Point 1" )
-	language.Add( "tool.measurertool.right_1", "Set the Point 2" )
+	language.Add( "tool.gruletool.left_1", "Set the Point 1" )
+	language.Add( "tool.gruletool.right_1", "Set the Point 2" )
 
-	language.Add( "tool.measurertool.left_2", "Set the Point to start the backtrace." )
+	language.Add( "tool.gruletool.left_2", "Set the Point to start the backtrace." )
 
-	language.Add( "tool.measurertool.left_3", "Set the Point 1 and the Normal where the direction will be perpendicular to" )
-	language.Add( "tool.measurertool.right_3", "Set the Point 2 and Magnitude" )
+	language.Add( "tool.gruletool.left_3", "Set the Point 1 and the Normal where the direction will be perpendicular to" )
+	language.Add( "tool.gruletool.right_3", "Set the Point 2 and Magnitude" )
 
 
-	language.Add( "tool.measurertool.reload", "Clear selection." )
+	language.Add( "tool.gruletool.reload", "Clear selection." )
 
 end
 
 -- Because gmod sucks.
 local function GetClientInfo(convar)
-	local c = "measurertool_" .. convar
+	local c = "gruletool_" .. convar
 	return GetConVar(c):GetString()
 end
 
 local function SetClientData(convar, data)
-	LocalPlayer():ConCommand("measurertool_" .. convar .. " " .. data )
+	LocalPlayer():ConCommand("gruletool_" .. convar .. " " .. data )
 end
 
 function TOOL:LeftClick(trace)
@@ -131,15 +131,15 @@ do
 		local UnitConversion = GRule.UnitConversion
 		local ToolModes = GRule.ToolModes
 
-		panel:Help("#tool.measurertool.desc")
+		panel:Help("#tool.gruletool.desc")
 
-		panel:NumSlider( "Decimal count", "measurertool_roundcount", 0, 11, 0)
+		panel:NumSlider( "Decimal count", "gruletool_roundcount", 0, 11, 0)
 		panel:ControlHelp( "Rounds the distances according to the decimal count." )
 
-		panel:CheckBox("Map Scale", "measurertool_mapscale")
+		panel:CheckBox("Map Scale", "gruletool_mapscale")
 		panel:ControlHelp( "Uses the Architecture scale factor (1 unit = 0.75 inch)")
 
-		panel:CheckBox("Full name", "measurertool_longname")
+		panel:CheckBox("Full name", "gruletool_longname")
 		panel:ControlHelp( "Should the measure unit be fully displayed or not?")
 
 		do

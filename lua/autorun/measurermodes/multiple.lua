@@ -5,7 +5,7 @@ local Mode = {}
 Mode.id = "enttoent"
 Mode.name = "Entity to Entity"
 Mode.desc = "Entities are the points. Measures data are updated on the fly."
-Mode.operation = 3
+Mode.operation = 0
 
 local function SendPosition(idx, Entity, tool)
 
@@ -52,12 +52,12 @@ function Mode.CPanelConfig(panel)
 end
 
 local function GetClientValue(convar)
-	local c = "measurertool_" .. convar
+	local c = "gruletool_" .. convar
 	return GetConVar(c):GetInt()
 end
 
 local function GetClientInfo(convar)
-	local c = "measurertool_" .. convar
+	local c = "gruletool_" .. convar
 	return GetConVar(c):GetString()
 end
 

@@ -132,12 +132,12 @@ end
 do
 
 	local function GetClientValue(convar)
-		local c = "measurertool_" .. convar
+		local c = "gruletool_" .. convar
 		return GetConVar(c):GetInt()
 	end
 
 	local function GetClientInfo(convar)
-		local c = "measurertool_" .. convar
+		local c = "gruletool_" .. convar
 		return GetConVar(c):GetString()
 	end
 
