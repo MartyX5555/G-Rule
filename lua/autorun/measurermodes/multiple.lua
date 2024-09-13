@@ -113,10 +113,8 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_MultipleRendering", function()
 		local Ent2 = GRule.CPoints[2]
 
 		if IsValid(Ent1) and IsValid(Ent2) then
-			local Point1 = Ent1:GetPos()
-			local Point2 = Ent2:GetPos()
-
-			print(Point2)
+			local Point1 = Ent1:WorldSpaceCenter()
+			local Point2 = Ent2:WorldSpaceCenter()
 
 			if Point1 and Point2 then
 				CreateBasicRuleRect(Point1, Point2)

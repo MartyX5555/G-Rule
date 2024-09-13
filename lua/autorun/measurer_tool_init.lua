@@ -168,6 +168,7 @@ if CLIENT then
 end
 
 include("autorun/measurermodes/basic.lua")
+include("autorun/measurermodes/basicsnap.lua")
 include("autorun/measurermodes/hitnormal.lua")
 include("autorun/measurermodes/poshitnormal.lua")
 include("autorun/measurermodes/multiple.lua")

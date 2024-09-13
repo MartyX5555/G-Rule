@@ -5,7 +5,7 @@ local Mode = {}
 Mode.id = "basic"
 Mode.name = "Basic"
 Mode.desc = "Performs a measure between 2 points."
-Mode.operation = 0
+Mode.operation = 10
 
 local function SendPosition(idx, PointPos, tool)
 
@@ -34,7 +34,6 @@ end
 function Mode.LeftClick(tool, trace)
 	local HitPos = trace.HitPos
 	SendPosition(1, HitPos, tool)
-
 end
 
 function Mode.RightClick(tool, trace)
@@ -62,15 +61,23 @@ local function GetClientInfo(convar)
 	return GetConVar(c):GetString()
 end
 
-local function RenderCross(Pos, Color)
+local Black = Color(0,0,0, 255)
+local function RenderCross(Idx, Pos, C)
 	local Factor = 10
 	local Forward = Vector(Factor,0,0)
 	local Right = Vector(0,Factor,0)
 	local Up = Vector(0, 0, Factor)
+	local TextScr = Pos:ToScreen()
 
-	render.DrawLine( Pos - Forward, Pos + Forward, Color or color_white, true )
-	render.DrawLine( Pos - Right, Pos + Right, Color or color_white, true)
-	render.DrawLine( Pos - Up, Pos + Up, Color or color_white, true )
+	render.DrawLine( Pos - Forward, Pos + Forward, C or color_white, true )
+	render.DrawLine( Pos - Right, Pos + Right, C or color_white, true)
+	render.DrawLine( Pos - Up, Pos + Up, C or color_white, true )
+
+	cam.Start2D()
+		if TextScr.visible then
+			draw.SimpleTextOutlined(Idx, "HudDefault", TextScr.x + 5, TextScr.y + 5, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Black )
+		end
+	cam.End2D()
 end
 
 local function FormatDistaceText( dist )
@@ -100,8 +107,6 @@ local function CreateBasicRuleRect(Pos1, Pos2)
 		cam.End2D()
 
 		render.DrawLine(Pos1, Pos2, color_white, true )
-		RenderCross(Pos1, Color(0,83,167))
-		RenderCross(Pos2, Color(255,150,0,255))
 end
 
 hook.Remove("PostDrawTranslucentRenderables", "GRule_BasicRendering")
@@ -110,21 +115,31 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_BasicRendering", function()
 
 	-- Between 2 Points
 	do
-
 		local Point1 = GRule.CPoints[1]
 		local Point2 = GRule.CPoints[2]
 
-		if Point1 and Point2 then
-
-			if InfMap then
-				local ply = LocalPlayer()
+		if InfMap then
+			local ply = LocalPlayer()
+			if Point1 then
 				local IPoint1, offset1 = InfMap.localize_vector(Point1)
-				local IPoint2, offset2 = InfMap.localize_vector(Point2)
-
 				Point1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
-				Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
 			end
 
+			if Point2 then
+				local IPoint2, offset2 = InfMap.localize_vector(Point2)
+				Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
+			end
+		end
+
+		if Point1 then
+			RenderCross(1, Point1, Color(0,56,111))
+		end
+
+		if Point2 then
+			RenderCross(2, Point2, Color(166,97,0))
+		end
+
+		if Point1 and Point2 then
 			CreateBasicRuleRect(Point1, Point2)
 		end
 	end

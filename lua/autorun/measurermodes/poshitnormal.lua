@@ -121,7 +121,6 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function(
 		local Normal1 = GRule.HitNormals[1]
 
 		if InfMap then
-
 			local ply = LocalPlayer()
 			if Point1 then
 				local IPoint1, offset1 = InfMap.localize_vector(Point1)
