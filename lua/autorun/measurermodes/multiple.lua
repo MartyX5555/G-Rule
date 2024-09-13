@@ -24,6 +24,7 @@ function Mode.ReceivePosition(data)
 	local Entity = ents.GetByIndex(data.EntIdx)
 
 	GRule.CPoints[Idx] = Entity
+	GRule.CanPing = true
 end
 
 function Mode.LeftClick(tool, trace)
@@ -43,8 +44,7 @@ function Mode.RightClick(tool, trace)
 end
 
 function Mode.Reload(tool, trace)
-	tool.FirstEntity = nil
-	tool.SecondEntity = nil
+	GRule.CPoints = {}
 end
 
 function Mode.CPanelConfig(panel)
@@ -72,35 +72,34 @@ local function RenderCross(Pos, Color)
 	render.DrawLine( Pos - Up, Pos + Up, Color or color_white, true )
 end
 
-local function FormatDistaceText( dist )
-	local UnitTable   = GRule.UnitConversion
-	local CUnit       = GetClientInfo("unit")
-	local UnitData    = next(UnitTable) and UnitTable[CUnit] or UnitTable["unit"]
-	local toUnit      = UnitData.convformula
-	local Fdist 	  = GetClientValue("rounded") > 0 and math.Round(toUnit(dist)) or toUnit(dist)
-	local UnitName    = GetClientValue("longname") > 0 and UnitData.lname or UnitData.sname
-
-	local txt = Fdist .. " " .. UnitName
-	return txt
+local function NotifyChat(txt)
+	chat.AddText(Color(255,255,0), "[-GRule-] ", color_white, "Distance: " .. txt)
 end
+
 
 -- Create a simple rect between 2 points.
 local function CreateBasicRuleRect(Pos1, Pos2)
 
-		local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
-		local dist = (Pos2 - Pos1):Length() * factor
-		local avgPos = (Pos1 + Pos2) / 2
-		local Dist2D = avgPos:ToScreen()
+	local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
+	local dist = (Pos2 - Pos1):Length() * factor
+	local avgPos = (Pos1 + Pos2) / 2
+	local Dist2D = avgPos:ToScreen()
+	local formatteddist = GRule.FormatDistanceText( dist )
 
-		cam.Start2D()
-			if Dist2D.visible then
-				draw.SimpleTextOutlined(FormatDistaceText( dist ), "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
-			end
-		cam.End2D()
+	cam.Start2D()
+		if Dist2D.visible then
+			draw.SimpleTextOutlined(formatteddist, "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
+		end
+	cam.End2D()
 
-		render.DrawLine(Pos1, Pos2, color_white, true )
-		RenderCross(Pos1, Color(0,83,167))
-		RenderCross(Pos2, Color(255,150,0,255))
+	render.DrawLine(Pos1, Pos2, color_white, true )
+	RenderCross(Pos1, Color(0,83,167))
+	RenderCross(Pos2, Color(255,150,0,255))
+
+	if GRule.CanPing then
+		GRule.CanPing = nil
+		NotifyChat(formatteddist)
+	end
 end
 
 hook.Remove("PostDrawTranslucentRenderables", "GRule_MultipleRendering")

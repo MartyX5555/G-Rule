@@ -1,15 +1,16 @@
-
 TOOL.Category = "Construction"
 TOOL.Name = "#tool.measurertool.name"
 
 TOOL.ClientConVar["mode"] = "basic"
 TOOL.ClientConVar["unit"] = "unit"
-TOOL.ClientConVar["rounded"] = 1
+TOOL.ClientConVar["roundcount"] = 2
+
 TOOL.ClientConVar["longname"] = 0
 TOOL.ClientConVar["mapscale"] = 0
 
 if SERVER then
 	util.AddNetworkString("GRule_Network")
+	util.AddNetworkString("GRule_ClientFix")
 end
 
 if CLIENT then
@@ -79,15 +80,38 @@ function TOOL:RightClick(trace)
 	return true
 end
 
-function TOOL:Reload(trace)
-	if SERVER then return true end
-
+--dealing with the singleplayer no client realms...
+local function DoReload(tool, trace)
 	local CMode = GetClientInfo("mode")
 	local modedata = GRule.GetModeInfo(CMode)
-	modedata.Reload(self, trace)
+	modedata.Reload(tool, trace)
+end
+
+function TOOL:Reload(trace)
+	if game.SinglePlayer() then
+		net.Start("GRule_ClientFix")
+			net.WriteEntity(self)
+		net.Send(self:GetOwner())
+	elseif CLIENT then
+		DoReload(self, trace)
+	end
 
 	return true
 end
+
+--dealing with the singleplayer no client realms...
+local toolmask = bit.bor( CONTENTS_SOLID, CONTENTS_MOVEABLE, CONTENTS_MONSTER, CONTENTS_WINDOW, CONTENTS_DEBRIS, CONTENTS_GRATE, CONTENTS_AUX )
+
+net.Receive("GRule_ClientFix", function()
+
+	local tool = net.ReadEntity()
+	local tr = util.GetPlayerTrace( LocalPlayer() )
+	tr.mask = toolmask
+	tr.mins = vector_origin
+	local trace = util.TraceLine( tr )
+
+	DoReload(tool, trace)
+end)
 
 function TOOL:Think()
 	if CLIENT then return end
@@ -109,8 +133,8 @@ do
 
 		panel:Help("#tool.measurertool.desc")
 
-		panel:CheckBox("Round measures", "measurertool_rounded")
-		panel:ControlHelp( "Rounds the distances to whole numbers." )
+		panel:NumSlider( "Decimal count", "measurertool_roundcount", 0, 11, 0)
+		panel:ControlHelp( "Rounds the distances according to the decimal count." )
 
 		panel:CheckBox("Map Scale", "measurertool_mapscale")
 		panel:ControlHelp( "Uses the Architecture scale factor (1 unit = 0.75 inch)")
@@ -140,12 +164,16 @@ do
 			end
 			function combo:OnSelect( _, name, data )
 				SetClientData("unit", data)
+				timer.Simple(0.05, function()
+					GRule.CanPing = true
+				end)
 			end
 			combo:SetValue(UnitConversion[GetClientInfo("unit")].name)
 
 		end
 		do
 
+			local Mode = ToolModes[GetClientInfo("mode")]
 			-- Rule Mode ComboBox
 			local modecombo = vgui.Create( "DComboBox" )
 			panel:AddItem(modecombo)
@@ -154,12 +182,21 @@ do
 			for id, data in pairs(ToolModes) do
 				modecombo:AddChoice( data.name, id )
 			end
+
+			modecombo:SetValue(Mode.name)
+			local desc = panel:Help(Mode.desc)
 			function modecombo:OnSelect( _, name, data )
 				GRule.CPoints = {}
-				SetClientData("mode", data)
-			end
-			modecombo:SetValue(ToolModes[GetClientInfo("mode")].name)
 
+				SetClientData("mode", data)
+
+				timer.Simple(0.05,function()
+					local desctxt = ToolModes[GetClientInfo("mode")].desc
+					desc:SetText(desctxt)
+					panel:GetParent():InvalidateChildren( true )
+				end)
+
+			end
 		end
 	end
 end

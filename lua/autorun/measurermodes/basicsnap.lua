@@ -4,7 +4,7 @@ local Mode = {}
 
 Mode.id = "basicsnap"
 Mode.name = "Basic - Snap to prop"
-Mode.desc = "Performs a measure between 2 points."
+Mode.desc = "Performs a measure between 2 points, using a PA like snap on props."
 Mode.operation = 0
 
 local function SendPosition(idx, PointPos, tool)
@@ -28,6 +28,7 @@ function Mode.ReceivePosition(data)
 	local Idx = data.Idx
 
 	GRule.CPoints[Idx] = Vector(X, Y, Z)
+	GRule.CanPing = true
 
 end
 
@@ -128,9 +129,7 @@ function Mode.Reload(tool, trace)
 	GRule.CPoints = {}
 end
 
-
 function Mode.CPanelConfig(panel)
-
 
 end
 
@@ -163,16 +162,8 @@ local function RenderCross(Idx, Pos, C)
 	cam.End2D()
 end
 
-local function FormatDistaceText( dist )
-	local UnitTable   = GRule.UnitConversion
-	local CUnit       = GetClientInfo("unit")
-	local UnitData    = next(UnitTable) and UnitTable[CUnit] or UnitTable["unit"]
-	local toUnit      = UnitData.convformula
-	local Fdist 	  = GetClientValue("rounded") > 0 and math.Round(toUnit(dist)) or toUnit(dist)
-	local UnitName    = GetClientValue("longname") > 0 and UnitData.lname or UnitData.sname
-
-	local txt = Fdist .. " " .. UnitName
-	return txt
+local function NotifyChat(txt)
+	chat.AddText(Color(255,255,0), "[-GRule-] ", color_white, "Distance: " .. txt)
 end
 
 -- Create a simple rect between 2 points.
@@ -182,16 +173,21 @@ local function CreateBasicRuleRect(Pos1, Pos2)
 	local dist = (Pos2 - Pos1):Length() * factor
 	local avgPos = (Pos1 + Pos2) / 2
 	local Dist2D = avgPos:ToScreen()
+	local formatteddist = GRule.FormatDistanceText( dist )
 
 	cam.Start2D()
 		if Dist2D.visible then
-			draw.SimpleTextOutlined(FormatDistaceText( dist ), "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
+			draw.SimpleTextOutlined(formatteddist, "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
 		end
 	cam.End2D()
 
 	render.DrawLine(Pos1, Pos2, color_white, true )
-end
 
+	if GRule.CanPing then
+		GRule.CanPing = nil
+		NotifyChat(formatteddist)
+	end
+end
 
 hook.Remove("PostDrawTranslucentRenderables", "GRule_BasicSnapRendering")
 hook.Add("PostDrawTranslucentRenderables", "GRule_BasicSnapRendering", function()

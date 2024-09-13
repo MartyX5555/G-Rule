@@ -123,13 +123,38 @@ do
 		return true
 	end
 
-
 	function GRule.GetModeInfo(mode)
 		local ToolModes = GRule.ToolModes
 		return IsReallyValidTable(ToolModes[mode]) and ToolModes[mode] or ToolModes["basic"]
 	end
-
 end
+
+do
+
+	local function GetClientValue(convar)
+		local c = "measurertool_" .. convar
+		return GetConVar(c):GetInt()
+	end
+
+	local function GetClientInfo(convar)
+		local c = "measurertool_" .. convar
+		return GetConVar(c):GetString()
+	end
+
+	function GRule.FormatDistanceText(dist)
+		local UnitTable   = GRule.UnitConversion
+		local CUnit       = GetClientInfo("unit")
+		local UnitData    = next(UnitTable) and UnitTable[CUnit] or UnitTable["unit"]
+		local toUnit      = UnitData.convformula
+		local roundCount  = GetClientValue("roundcount") or 0
+		local Fdist 	  = math.Round(toUnit(dist), roundCount)
+		local UnitName    = GetClientValue("longname") > 0 and UnitData.lname or UnitData.sname
+
+		local txt = Fdist .. " " .. UnitName
+		return txt
+	end
+end
+
 
 if SERVER then
 
