@@ -30,7 +30,6 @@ function Mode.ReceivePosition(data)
 
 	GRule.CPoints[Idx] = Vector(X, Y, Z)
 	GRule.CanPing = true
-
 end
 
 function Mode.LeftClick(tool, trace)
@@ -47,66 +46,9 @@ function Mode.Reload(tool, trace)
 	GRule.CPoints = {}
 end
 
-
-function Mode.CPanelConfig(panel)
-
-
-end
-
-local function GetClientValue(convar)
-	local c = "gruletool_" .. convar
-	return GetConVar(c):GetInt()
-end
-
 local function GetClientInfo(convar)
 	local c = "gruletool_" .. convar
 	return GetConVar(c):GetString()
-end
-
-local Black = Color(0,0,0, 255)
-local function RenderCross(Idx, Pos, C)
-	local Factor = 10
-	local Forward = Vector(Factor,0,0)
-	local Right = Vector(0,Factor,0)
-	local Up = Vector(0, 0, Factor)
-	local TextScr = Pos:ToScreen()
-
-	render.DrawLine( Pos - Forward, Pos + Forward, C or color_white, true )
-	render.DrawLine( Pos - Right, Pos + Right, C or color_white, true)
-	render.DrawLine( Pos - Up, Pos + Up, C or color_white, true )
-
-	cam.Start2D()
-		if TextScr.visible then
-			draw.SimpleTextOutlined(Idx, "HudDefault", TextScr.x + 5, TextScr.y + 5, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Black )
-		end
-	cam.End2D()
-end
-
-local function NotifyChat(txt)
-	chat.AddText(Color(255,255,0), "[-GRule-] ", color_white, "Distance: " .. txt)
-end
-
--- Create a simple rect between 2 points.
-local function CreateBasicRuleRect(Pos1, Pos2)
-
-	local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
-	local dist = (Pos2 - Pos1):Length() * factor
-	local avgPos = (Pos1 + Pos2) / 2
-	local Dist2D = avgPos:ToScreen()
-	local formatteddist = GRule.FormatDistanceText( dist )
-
-	cam.Start2D()
-		if Dist2D.visible then
-			draw.SimpleTextOutlined(formatteddist, "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
-		end
-	cam.End2D()
-
-	render.DrawLine(Pos1, Pos2, color_white, true )
-
-	if GRule.CanPing then
-		GRule.CanPing = nil
-		NotifyChat(formatteddist)
-	end
 end
 
 hook.Remove("PostDrawTranslucentRenderables", "GRule_BasicRendering")
@@ -132,18 +74,17 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_BasicRendering", function()
 		end
 
 		if Point1 then
-			RenderCross(1, Point1, Color(0,56,111))
+			GRule.RenderCross(1, Point1, Color(0,56,111))
 		end
 
 		if Point2 then
-			RenderCross(2, Point2, Color(166,97,0))
+			GRule.RenderCross(2, Point2, Color(166,97,0))
 		end
 
 		if Point1 and Point2 then
-			CreateBasicRuleRect(Point1, Point2)
+			GRule.CreateBasicRuleRect(Point1, Point2)
 		end
 	end
 end)
-
 
 GRule.ToolModes[Mode.id] = Mode

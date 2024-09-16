@@ -4,7 +4,7 @@ local Mode = {}
 
 Mode.id = "enttoent"
 Mode.name = "Entity to Entity"
-Mode.desc = "Entities are the points. Measures data are updated on the fly."
+Mode.desc = "Chosen entities are the points. Measures data are updated on the fly."
 Mode.operation = 0
 
 local function SendPosition(idx, Entity, tool)
@@ -47,59 +47,9 @@ function Mode.Reload(tool, trace)
 	GRule.CPoints = {}
 end
 
-function Mode.CPanelConfig(panel)
-
-end
-
-local function GetClientValue(convar)
-	local c = "gruletool_" .. convar
-	return GetConVar(c):GetInt()
-end
-
 local function GetClientInfo(convar)
 	local c = "gruletool_" .. convar
 	return GetConVar(c):GetString()
-end
-
-local function RenderCross(Pos, Color)
-	local Factor = 10
-	local Forward = Vector(Factor,0,0)
-	local Right = Vector(0,Factor,0)
-	local Up = Vector(0, 0, Factor)
-
-	render.DrawLine( Pos - Forward, Pos + Forward, Color or color_white, true )
-	render.DrawLine( Pos - Right, Pos + Right, Color or color_white, true)
-	render.DrawLine( Pos - Up, Pos + Up, Color or color_white, true )
-end
-
-local function NotifyChat(txt)
-	chat.AddText(Color(255,255,0), "[-GRule-] ", color_white, "Distance: " .. txt)
-end
-
-
--- Create a simple rect between 2 points.
-local function CreateBasicRuleRect(Pos1, Pos2)
-
-	local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
-	local dist = (Pos2 - Pos1):Length() * factor
-	local avgPos = (Pos1 + Pos2) / 2
-	local Dist2D = avgPos:ToScreen()
-	local formatteddist = GRule.FormatDistanceText( dist )
-
-	cam.Start2D()
-		if Dist2D.visible then
-			draw.SimpleTextOutlined(formatteddist, "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
-		end
-	cam.End2D()
-
-	render.DrawLine(Pos1, Pos2, color_white, true )
-	RenderCross(Pos1, Color(0,83,167))
-	RenderCross(Pos2, Color(255,150,0,255))
-
-	if GRule.CanPing then
-		GRule.CanPing = nil
-		NotifyChat(formatteddist)
-	end
 end
 
 hook.Remove("PostDrawTranslucentRenderables", "GRule_MultipleRendering")
@@ -115,12 +65,32 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_MultipleRendering", function()
 			local Point1 = Ent1:WorldSpaceCenter()
 			local Point2 = Ent2:WorldSpaceCenter()
 
+			if InfMap then
+				local ply = LocalPlayer()
+				if Point1 then
+					local IPoint1, offset1 = InfMap.localize_vector(Point1)
+					Point1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
+				end
+
+				if Point2 then
+					local IPoint2, offset2 = InfMap.localize_vector(Point2)
+					Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
+				end
+			end
+
+			if Point1 then
+				GRule.RenderCross(1, Point1, Color(0,83,167))
+			end
+
+			if Point2 then
+				GRule.RenderCross(2, Point2, Color(255,150,0,255))
+			end
+
 			if Point1 and Point2 then
-				CreateBasicRuleRect(Point1, Point2)
+				GRule.CreateBasicRuleRect(Point1, Point2)
 			end
 		end
 	end
 end)
-
 
 GRule.ToolModes[Mode.id] = Mode

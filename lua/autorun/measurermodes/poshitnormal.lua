@@ -37,7 +37,6 @@ function Mode.ReceivePosition(data)
 	GRule.CPoints[Idx] = Vector(X, Y, Z)
 	GRule.HitNormals[Idx] = Vector(NX, NY, NZ)
 	GRule.CanPing = true
-
 end
 
 function Mode.LeftClick(tool, trace)
@@ -54,58 +53,9 @@ function Mode.Reload(tool, trace)
 	GRule.CPoints = {}
 end
 
-function Mode.CPanelConfig(panel)
-end
-
-local function GetClientValue(convar)
-	local c = "gruletool_" .. convar
-	return GetConVar(c):GetInt()
-end
-
 local function GetClientInfo(convar)
 	local c = "gruletool_" .. convar
 	return GetConVar(c):GetString()
-end
-
-local function RenderCross(Pos, Color)
-	local Factor = 20
-	local Forward = Vector(Factor,0,0)
-	local Right = Vector(0,Factor,0)
-	local Up = Vector(0, 0, Factor)
-
-	render.DrawLine( Pos - Forward, Pos + Forward, Color or color_white, true )
-	render.DrawLine( Pos - Right, Pos + Right, Color or color_white, true)
-	render.DrawLine( Pos - Up, Pos + Up, Color or color_white, true )
-end
-
-local function NotifyChat(txt)
-	chat.AddText(Color(255,255,0), "[-GRule-] ", color_white, "Distance: " .. txt)
-end
-
-
--- Create a simple rect between 2 points.
-local function CreateBasicRuleRect(Pos1, Pos2)
-
-	local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
-	local dist = (Pos2 - Pos1):Length() * factor
-	local avgPos = (Pos1 + Pos2) / 2
-	local Dist2D = avgPos:ToScreen()
-	local formatteddist = GRule.FormatDistanceText( dist )
-
-	cam.Start2D()
-		if Dist2D.visible then
-			draw.SimpleTextOutlined(formatteddist, "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
-		end
-	cam.End2D()
-
-	render.DrawLine(Pos1, Pos2, color_white )
-	RenderCross(Pos1, Color(0,167,6))
-	RenderCross(Pos2, Color(255,0,0))
-
-	if GRule.CanPing then
-		GRule.CanPing = nil
-		NotifyChat(formatteddist)
-	end
 end
 
 local mat = Material("models/wireframe")
@@ -137,21 +87,23 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function(
 			local size = Vector(50,50,0)
 			render.SetMaterial( mat )
 			render.DrawBox( Point1 + Normal1:GetNormalized() * 1, Normal1:Angle() + Angle(90,0,0), -size, size, Color(0,255,0) )
+
+			GRule.RenderCross("HitPlane", Point1, Color(0,167,6))
 		end
 
-		if Point1 and Point2 and Normal1 then
+		if Point1 and Point2 then
 
 			-- Convert the second point to local space relative to the first point
-			local localVec = WorldToLocal(Point2, Angle(), Point1, Normal1:Angle())
+			local localVec = WorldToLocal(Point2, angle_zero, Point1, Normal1:Angle())
 			local newLVec = localVec * Vector(1,0,0)
 
 			-- Convert the local vector back to world space
 			local NewPos2 = LocalToWorld(newLVec, Angle(), Point1, Normal1:Angle())
 
-			CreateBasicRuleRect(Point1, NewPos2)
+			GRule.CreateBasicRuleRect(Point1, NewPos2)
+			GRule.RenderCross("End Point!", NewPos2, Color(255,0,0))
 		end
 	end
 end)
-
 
 GRule.ToolModes[Mode.id] = Mode
