@@ -65,19 +65,6 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_MultipleRendering", function()
 			local Point1 = Ent1:WorldSpaceCenter()
 			local Point2 = Ent2:WorldSpaceCenter()
 
-			if InfMap then
-				local ply = LocalPlayer()
-				if Point1 then
-					local IPoint1, offset1 = InfMap.localize_vector(Point1)
-					Point1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
-				end
-
-				if Point2 then
-					local IPoint2, offset2 = InfMap.localize_vector(Point2)
-					Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
-				end
-			end
-
 			if Point1 then
 				GRule.RenderCross(1, Point1, Color(0,83,167))
 			end

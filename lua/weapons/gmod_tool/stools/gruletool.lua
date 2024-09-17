@@ -29,6 +29,9 @@ if CLIENT then
 		{ name = "left_3", icon = "gui/lmb.png",  op = 2, stage = 0 },
 		{ name = "right_3", icon = "gui/rmb.png", op = 2, stage = 0 },
 
+		--space
+		{ name = "left_4", icon = "gui/lmb.png",  op = 3, stage = 0 },
+		{ name = "right_4", icon = "gui/rmb.png", op = 3, stage = 0 },
 
 		{ name = "reload", icon = "gui/r.png" },
 
@@ -45,6 +48,8 @@ if CLIENT then
 	language.Add( "tool.gruletool.left_3", "Set the Point 1 and the Normal where the direction will be perpendicular to" )
 	language.Add( "tool.gruletool.right_3", "Set the Point 2 and Magnitude" )
 
+	language.Add( "tool.gruletool.left_4", "Sets the Point at a specific position" )
+	language.Add( "tool.gruletool.right_4", "Sets the Point at origin vector." )
 
 	language.Add( "tool.gruletool.reload", "Clear selection." )
 

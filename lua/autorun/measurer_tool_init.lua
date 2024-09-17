@@ -1,7 +1,7 @@
 --[[
 	Key Documentation: https://developer.valvesoftware.com/wiki/Dimensions_(Half-Life_2_and_Counter-Strike:_Source)#Source_Engine_Scale_Calculations
 
-	Demostration: 
+	Demostration:
 
 		For Mapscale:
 
@@ -32,14 +32,14 @@
 
 ]]
 
-GRule = {}
+GRule = GRule or {}
 
-GRule.ToolModes = {}
-GRule.CPoints = {}
-GRule.HitNormals = {}
-GRule.Timers = {}
+GRule.ToolModes = GRule.ToolModes or {}
+GRule.CPoints = GRule.CPoints or {}
+GRule.HitNormals = GRule.HitNormals or {}
+GRule.Timers = GRule.Timers or {}
 
--- Conversion table. All the formulas below are based FROM the inche TO [unit here]
+-- Conversion table. All the formulas below are based FROM the inche TO [unit here]. Credits to google and its unit converter
 GRule.UnitConversion = {
 	["unit"] = {
 		idx = 1,
@@ -50,8 +50,8 @@ GRule.UnitConversion = {
 	},
 	["inche"] = {
 		idx = 2,
-		name = "Inch (inch)",
-		sname = "inch",
+		name = "Inch (in)",
+		sname = "in",
 		lname = "inches",
 		convformula = function(value) return value end, -- To tell you that inches are EQUAL TO units sources. However, not the case for map scale
 	},
@@ -130,24 +130,57 @@ GRule.UnitConversion = {
 		name = "Light-year (ly)",
 		sname = "ly",
 		lname = "light-year",
-		convformula = function(value) return value / 39370000000000. end,
+		convformula = function(value) return value / 372500000000000000. end,
 	},
-	["mile"] = {
+	["parsec"] = {
 		idx = 14,
+		name = "Parsec (pc)",
+		sname = "pc",
+		lname = "parsecs",
+		convformula = function(value) return value / 1215000000000000000. end,
+	},
+	["kiloparsec"] = {
+		idx = 15,
+		name = "Kiloparsec (kpc)",
+		sname = "kpc",
+		lname = "kiloparsecs",
+		convformula = function(value) return value / 1215000000000000000000 end,
+	},
+	["megaparsec"] = {
+		idx = 16,
+		name = "Megaparsec (Mpc)",
+		sname = "Mpc",
+		lname = "megaparsecs",
+		convformula = function(value) return value / 1215000000000000000000000 end,
+	},
+	["gigaparsec"] = {
+		idx = 17,
+		name = "Gigaparsec (Gpc)",
+		sname = "Gpc",
+		lname = "gigaparsecs",
+		convformula = function(value) return value / 1215000000000000000000000000 end,
+	},--
+	["teraparsec"] = {
+		idx = 18,
+		name = "Teraparsec (Tpc)",
+		sname = "Tpc",
+		lname = "teraparsecs",
+		convformula = function(value) return value / 1215000000000000000000000000000 end,
+	},--
+	["mile"] = {
+		idx = 19,
 		name = "Mile (mi)",
 		sname = "mi",
 		lname = "Miles",
 		convformula = function(value) return value / 63360 end,
 	},
 	["naumile"] = {
-		idx = 15,
+		idx = 20,
 		name = "Nautic Mile (nm)",
 		sname = "nm",
 		lname = "Nautic Miles",
 		convformula = function(value) return value / 72910 end,
 	},
-
---
 }
 do
 	local function IsReallyValidTable(tbl)
@@ -255,6 +288,19 @@ if CLIENT then
 
 			local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
 			local dist = (Pos2 - Pos1):Length() * factor
+
+			-- Universe like size workaround. May lose a lot of precision due to the mega distances, but better than returning an inf.
+			-- The workaround is simply using the chunk value instead of unit, since 1 chunk = 10000 units wide
+			-- Bro, seriously, the amount of precision loss is insane, blame lua by doing this!!
+			if InfMap and dist >= 10000000000000000000000000000 then -- aproximately 15 parsecs.
+				local _, c1 = InfMap.localize_vector(Pos1)
+				local _, c2 = InfMap.localize_vector(Pos2)
+
+				local big = 0.0000000000000000000000001
+				local thing = ((c2 - c1)  * big):Length()
+				dist = (thing / big) * InfMap.chunk_size * factor * 2
+			end
+
 			local avgPos = (Pos1 + Pos2) / 2
 			local Dist2D = avgPos:ToScreen()
 			local formatteddist = GRule.FormatDistanceText( dist )
@@ -280,6 +326,8 @@ include("autorun/measurermodes/basicsnap.lua")
 include("autorun/measurermodes/hitnormal.lua")
 include("autorun/measurermodes/poshitnormal.lua")
 include("autorun/measurermodes/multiple.lua")
+include("autorun/measurermodes/space.lua")
+
 
 
 
