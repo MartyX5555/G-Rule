@@ -20,3 +20,4 @@ Also, you can get this tool directly from the workshop (waiting for link)
 
 - When getting distances too large, make sure to increase the decimal count to avoid misconceptions of the values (1 Megameter is 1000 km, but rounding it to 0 decimals means 0.5 Mm becomes 1 Mm)
 - In InfMap, certain trace-based modes wont work beyond the chunk where it was performed. If you want to get distance across many chunks, use the Entity to Entity or basic modes.
+- The traces can add until 0.625 due to how they work currently, meaning that measures can be *slightly* higher than the real one.
