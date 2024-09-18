@@ -7,6 +7,7 @@ TOOL.ClientConVar["roundcount"] = 2
 
 TOOL.ClientConVar["longname"] = 0
 TOOL.ClientConVar["mapscale"] = 0
+TOOL.ClientConVar["posparent"] = 0
 
 if SERVER then
 	util.AddNetworkString("GRule_Network")
@@ -147,6 +148,9 @@ do
 		panel:CheckBox("Full name", "gruletool_longname")
 		panel:ControlHelp( "Should the measure unit be fully displayed or not?")
 
+		local parentcheck = panel:CheckBox("Attach points to props", "gruletool_posparent")
+		panel:ControlHelp( "If applied on a prop, the point will be attached.")
+
 		do
 			-- Unit Measurement ComboBox
 			local combo = vgui.Create( "DComboBox" )
@@ -195,15 +199,19 @@ do
 
 				SetClientData("mode", data)
 
+				-- For some reason, setting it to 0 causes the panel to not be correctly built
 				timer.Simple(0.05,function()
+					local CMode = ToolModes[GetClientInfo("mode")]
 					local desctxt = ToolModes[GetClientInfo("mode")].desc
 					desc:SetText(desctxt)
+					parentcheck:SetEnabled( CMode.hasparentpoints )
 					panel:GetParent():InvalidateChildren( true )
 				end)
 
 			end
 		end
 	end
+
 end
 
 

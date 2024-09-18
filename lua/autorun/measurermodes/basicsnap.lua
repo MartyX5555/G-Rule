@@ -6,8 +6,9 @@ Mode.id = "basicsnap"
 Mode.name = "Basic - Snap to prop"
 Mode.desc = "Performs a measure between 2 points, using a PA like snap on props."
 Mode.operation = 0
+Mode.hasparentpoints = true
 
-local function SendPosition(idx, PointPos, tool)
+local function SendPosition(idx, PointPos, Entity, tool)
 
 	local data = {
 		Idx = idx,
@@ -16,6 +17,9 @@ local function SendPosition(idx, PointPos, tool)
 		PosY = PointPos.y,
 		PosZ = PointPos.z,
 	}
+	if IsValid(Entity) then
+		data.EntIdx = Entity:EntIndex()
+	end
 
 	GRule.NetworkData(Mode.id, data, tool:GetOwner())
 end
@@ -26,11 +30,14 @@ function Mode.ReceivePosition(data)
 	local Y = data.PosY
 	local Z = data.PosZ
 	local Idx = data.Idx
+	local Entity = ents.GetByIndex(data.EntIdx or 0)
+	local valident = IsValid(Entity) and true or false
 
-	GRule.CPoints[Idx] = Vector(X, Y, Z)
+	GRule.CPoints[Idx] = { pos = Vector(X, Y, Z), ent = Entity, isvalid = valident } -- to make a difference between the normal point and the point that had a local entity.
 	GRule.CanPing = true
 end
 
+-- for the god sake, please, keep away all this mess of your eyes.... its painful : /
 local function GetNearestSnapPos(HitPos, Ent)
 
 	local LPos = Ent:WorldToLocal(HitPos)
@@ -99,17 +106,22 @@ local function GetNearestSnapPos(HitPos, Ent)
 	end
 end
 
-
 function Mode.LeftClick(tool, trace)
 	local HitPos = trace.HitPos
 	local Ent = trace.Entity
 
 	if IsValid(Ent) then
 		local Pos = GetNearestSnapPos(HitPos, Ent)
+
+		if tool:GetClientNumber("posparent") > 0 then
+			Pos = Ent:WorldToLocal(Pos) --
+		else
+			Ent = nil
+		end
 		HitPos = Pos
 	end
 
-	SendPosition(1, HitPos, tool)
+	SendPosition(1, HitPos, Ent, tool)
 end
 
 function Mode.RightClick(tool, trace)
@@ -118,10 +130,16 @@ function Mode.RightClick(tool, trace)
 
 	if IsValid(Ent) then
 		local Pos = GetNearestSnapPos(HitPos, Ent)
+
+		if tool:GetClientNumber("posparent") > 0 then
+			Pos = Ent:WorldToLocal(Pos) --
+		else
+			Ent = nil
+		end
 		HitPos = Pos
 	end
 
-	SendPosition(2, HitPos, tool)
+	SendPosition(2, HitPos, Ent, tool)
 end
 
 function Mode.Reload(tool, trace)
@@ -133,38 +151,64 @@ local function GetClientInfo(convar)
 	return GetConVar(c):GetString()
 end
 
+local function VerifyData(Point)
+	if not Point then return {} end
+	if not IsValid(Point.ent) and Point.isvalid then
+		Point = {}
+	end
+	return Point
+end
+
 hook.Remove("PostDrawTranslucentRenderables", "GRule_BasicSnapRendering")
 hook.Add("PostDrawTranslucentRenderables", "GRule_BasicSnapRendering", function()
 	if GetClientInfo("mode") ~= Mode.id then return end
 
+	local CPoints = GRule.CPoints
+
 	-- Between 2 Points
 	do
-		local Point1 = GRule.CPoints[1]
-		local Point2 = GRule.CPoints[2]
 
+		local Point1 = VerifyData(CPoints[1])
+		local Point2 = VerifyData(CPoints[2])
+
+		local Pos1 = Point1.pos
+		local Pos2 = Point2.pos
+
+		-- InfMap already does the duty inside of the localtoworld functions below.
 		if InfMap then
 			local ply = LocalPlayer()
-			if Point1 then
-				local IPoint1, offset1 = InfMap.localize_vector(Point1)
-				Point1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
+			if Pos1 and not Point1.isvalid then
+				local IPoint1, offset1 = InfMap.localize_vector(Pos1)
+				Pos1 = InfMap.unlocalize_vector(IPoint1, offset1 - ply.CHUNK_OFFSET)
 			end
 
-			if Point2 then
-				local IPoint2, offset2 = InfMap.localize_vector(Point2)
-				Point2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
+			if Pos2 and not Point2.isvalid then
+				local IPoint2, offset2 = InfMap.localize_vector(Pos2)
+				Pos2 = InfMap.unlocalize_vector(IPoint2, offset2 - ply.CHUNK_OFFSET)
 			end
 		end
 
-		if Point1 then
-			GRule.RenderCross(1, Point1, Color(0,56,111))
+
+		if Point1.isvalid then
+			local Ent1 = Point1.ent
+			Pos1 = Ent1:LocalToWorld(Pos1)
 		end
 
-		if Point2 then
-			GRule.RenderCross(2, Point2, Color(166,97,0))
+		if Point2.isvalid then
+			local Ent2 = Point2.ent
+			Pos2 = Ent2:LocalToWorld(Pos2)
 		end
 
-		if Point1 and Point2 then
-			GRule.CreateBasicRuleRect(Point1, Point2)
+		if Pos1 then
+			GRule.RenderCross(1, Pos1, Color(0,56,111))
+		end
+
+		if Pos2 then
+			GRule.RenderCross(2, Pos2, Color(166,97,0))
+		end
+
+		if Pos1 and Pos2 then
+			GRule.CreateBasicRuleRect(Pos1, Pos2)
 		end
 	end
 end)
