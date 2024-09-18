@@ -287,7 +287,8 @@ if CLIENT then
 		function GRule.CreateBasicRuleRect(Pos1, Pos2)
 
 			local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
-			local dist = (Pos2 - Pos1):Length() * factor
+			local dir = (Pos2 - Pos1)
+			local dist = dir:Length() * factor
 
 			-- Universe like size workaround. May lose a lot of precision due to the mega distances, but better than returning an inf.
 			-- The workaround is simply using the chunk value instead of unit, since 1 chunk = 10000 units wide
@@ -305,9 +306,14 @@ if CLIENT then
 			local Dist2D = avgPos:ToScreen()
 			local formatteddist = GRule.FormatDistanceText( dist )
 
+			local angles = dir:Angle()
+			angles:Normalize()
+			local formattedang = "Angle: " .. tostring(angles)
+
 			cam.Start2D()
 				if Dist2D.visible then
 					draw.SimpleTextOutlined(formatteddist, "HudDefault", Dist2D.x, Dist2D.y + 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
+					draw.SimpleTextOutlined(formattedang, "HudDefault", Dist2D.x, Dist2D.y + 35, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1,Color(0,0,0, 255) )
 				end
 			cam.End2D()
 
