@@ -333,9 +333,3 @@ include("autorun/measurermodes/hitnormal.lua")
 include("autorun/measurermodes/poshitnormal.lua")
 include("autorun/measurermodes/multiple.lua")
 include("autorun/measurermodes/space.lua")
-
-
-
-
-
-
