@@ -123,11 +123,11 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_BasicRendering", function()
 		end
 
 		if Pos1 then
-			GRule.RenderCross(1, Pos1, Color(0,56,111))
+			GRule.RenderCross(1, Pos1, Color(0,100,255))
 		end
 
 		if Pos2 then
-			GRule.RenderCross(2, Pos2, Color(166,97,0))
+			GRule.RenderCross(2, Pos2, Color(255,100,0))
 		end
 
 		if Pos1 and Pos2 then
