@@ -298,8 +298,11 @@ if CLIENT then
 				local _, c2 = InfMap.localize_vector(Pos2)
 
 				local big = 0.0000000000000000000000001
-				local thing = ((c2 - c1)  * big):Length()
-				dist = (thing / big) * InfMap.chunk_size * factor * 2
+				local newdir = c2 - c1 
+				local thing = newdir  * big
+				local thing2 = thing:Length()
+				dir = newdir
+				dist = (thing2 / big) * InfMap.chunk_size * factor * 2
 			end
 
 			local avgPos = (Pos1 + Pos2) / 2

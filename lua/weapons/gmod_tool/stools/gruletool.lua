@@ -132,6 +132,27 @@ end
 
 do
 
+	local function CreateSpacer(panel)
+		local Spacer = vgui.Create("DLabel", panel)
+		Spacer:SetSize( ScrW(), 20 ) -- CONCERN: no clue how to get controlpanel Height. Using the manual way.
+		Spacer:SetText("")
+		function Spacer:Paint(w, h)
+			draw.RoundedBox( 5, 0, h / 2, w, 2, Color(150,150,150) )
+		end
+		panel:AddItem(Spacer)
+	end
+
+	local function createSubPanel(panel, CMode)
+
+		panel.subpanel:Clear()
+		panel.subpanel:Hide()
+
+		if CMode.CPanelCustom then
+			panel.subpanel:Show()
+			CMode.CPanelCustom(panel.subpanel)
+		end
+	end
+
 	function TOOL.BuildCPanel(panel)
 
 		local UnitConversion = GRule.UnitConversion
@@ -151,9 +172,12 @@ do
 		local parentcheck = panel:CheckBox("Attach points to props", "gruletool_posparent")
 		panel:ControlHelp( "If applied on a prop, the point will be attached.")
 
+		CreateSpacer(panel)
+
 		do
 			-- Unit Measurement ComboBox
 			local combo = vgui.Create( "DComboBox" )
+			combo:SetTooltip( "Choose the unit. Hammer Units are not affected by the current unit scale." )
 			combo:SetSortItems( false )
 			panel:AddItem(combo)
 
@@ -185,6 +209,7 @@ do
 			local Mode = ToolModes[GetClientInfo("mode")]
 			-- Rule Mode ComboBox
 			local modecombo = vgui.Create( "DComboBox" )
+			modecombo:SetTooltip( "Choose the mode this tool will operate." )
 			panel:AddItem(modecombo)
 
 			-- Populate the array with elements containing both key and value pairs
@@ -202,14 +227,34 @@ do
 				-- For some reason, setting it to 0 causes the panel to not be correctly built
 				timer.Simple(0.05,function()
 					local CMode = ToolModes[GetClientInfo("mode")]
-					local desctxt = ToolModes[GetClientInfo("mode")].desc
-					desc:SetText(desctxt)
+					desc:SetText(CMode.desc)
 					parentcheck:SetEnabled( CMode.hasparentpoints )
+
+					createSubPanel(panel, CMode)
+
 					panel:GetParent():InvalidateChildren( true )
 				end)
 
 			end
+			parentcheck:SetEnabled( Mode.hasparentpoints )
+
+			panel.subpanel = vgui.Create("DForm", panel)
+			panel:AddItem(panel.subpanel)
+
+			createSubPanel(panel, Mode)
 		end
+
+		CreateSpacer(panel)
+
+		panel:Help("Documentation about this tool can be found here.")
+		local HelpButton = vgui.Create("DButton", panel)
+		HelpButton:SetText("See documentation")
+		HelpButton:SetIcon("icon16/book_open.png")
+		function HelpButton:DoClick()
+			gui.OpenURL("https://github.com/MartyX5555/G-Rule/wiki")
+		end
+		panel:AddItem(HelpButton)
+
 	end
 
 end
