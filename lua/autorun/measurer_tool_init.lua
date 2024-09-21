@@ -194,6 +194,12 @@ do
 		local ToolModes = GRule.ToolModes
 		return IsReallyValidTable(ToolModes[mode]) and ToolModes[mode] or ToolModes["basic"]
 	end
+
+	function GRule.GetUnitInfo(unit)
+		local Units = GRule.UnitConversion
+		return IsReallyValidTable(Units[unit]) and Units[unit] or Units["unit"]
+	end
+
 end
 
 
@@ -298,10 +304,10 @@ if CLIENT then
 				local _, c2 = InfMap.localize_vector(Pos2)
 
 				local big = 0.0000000000000000000000001
-				local newdir = c2 - c1 
+				local newdir = c2 - c1
 				local thing = newdir  * big
 				local thing2 = thing:Length()
-				dir = newdir
+				dir = newdir -- reinforce the break but still breaks anyways.
 				dist = (thing2 / big) * InfMap.chunk_size * factor * 2
 			end
 
