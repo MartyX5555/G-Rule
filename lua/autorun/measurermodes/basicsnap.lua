@@ -47,6 +47,11 @@ local function GetNearestSnapPos(HitPos, Ent)
 		local BoxCentre = Ent:OBBCenter()
 		local Mins, Maxs = Phys:GetAABB()
 
+		-- Prop is potentially makespherical. Return the center only.
+		if not (Mins and Maxs) then
+			return Ent:LocalToWorld(BoxCentre)
+		end
+
 		-- List of positions to snap to (prop corners and centers)
 		local snapPoints = {
 			-- Center of the bounding box

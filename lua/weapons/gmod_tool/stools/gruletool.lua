@@ -265,9 +265,11 @@ do
 
 	end
 
+	local blockmargin = 10
 	local TopColor = Color( 255, 128, 0)
 	local TitleColor = Color( 255, 255, 255)
 	local BackGroundCol = Color( 50, 50, 50 )
+	local BackGroundPanelCol = Color(35,35,35)
 
 	-- Taken and modified from: https://github.com/Facepunch/garrysmod/blob/70bd0e3970b816df2de6449ec2f4c43f7a9a328e/garrysmod/gamemodes/sandbox/entities/weapons/gmod_tool/cl_viewscreen.lua#L16
 	local function DrawScrollingText( text, y, texwide )
@@ -284,8 +286,6 @@ do
 
 		end
 	end
-
-	local blockmargin = 10
 
 	function TOOL:DrawToolScreen( width, height )
 		--if true then return end
@@ -314,21 +314,21 @@ do
 
 		do
 			if #modedata.name > 10 then
-				surface.SetDrawColor( Color(35,35,35) )
+				surface.SetDrawColor( BackGroundPanelCol )
 				surface.DrawRect( 0, 60, width, 80 )
 				draw.SimpleText( "Current mode", "HudDefault", width / 2, 70, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
 				DrawScrollingText(  modedata.name, 110, 256 )
 			else
 
-				draw.RoundedBox( 14, blockmargin, 60, width - (blockmargin * 2), 80, Color(35,35,35) )
+				draw.RoundedBox( 14, blockmargin, 60, width - (blockmargin * 2), 80, BackGroundPanelCol )
 				draw.SimpleText( "Current mode", "HudDefault", width / 2, 70, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
 				draw.SimpleText( modedata.name, "GRule_ToolScreenTitle", width / 2, 110, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 			end
 		end
 		do
-			draw.RoundedBox( 14, blockmargin, 145, width - (blockmargin * 2), 50, Color(35,35,35) )
+			draw.RoundedBox( 14, blockmargin, 145, width - (blockmargin * 2), 50, BackGroundPanelCol )
 			draw.SimpleText( unitdata.name, "GRule_ToolScreenUnit", width / 2, 170, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
 		end
@@ -340,7 +340,7 @@ do
 			end
 
 			local scaletxt = "Scale: " .. scale
-			draw.RoundedBox( 14, blockmargin, 200, width - (blockmargin * 2), 50, Color(35,35,35) )
+			draw.RoundedBox( 14, blockmargin, 200, width - (blockmargin * 2), 50, BackGroundPanelCol )
 			draw.SimpleText( scaletxt , "GRule_ToolScreenUnit", width / 2, 225, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
 		end

@@ -48,134 +48,141 @@ GRule.UnitConversion = {
 		lname = "hammer units",
 		convformula = function(value) return value end, -- no changes between playerscale and mapscale.
 	},
-	["inche"] = {
+	["inch"] = {
 		idx = 2,
 		name = "Inch (in)",
 		sname = "in",
 		lname = "inches",
 		convformula = function(value) return value end, -- To tell you that inches are EQUAL TO units sources. However, not the case for map scale
 	},
-	["feet"] = {
+	["yard"] = {
 		idx = 3,
+		name = "Yard (yr)",
+		sname = "yr",
+		lname = "yards",
+		convformula = function(value) return value / 36 end,
+	},
+	["feet"] = {
+		idx = 4,
 		name = "Foot (ft)",
 		sname = "ft",
 		lname = "feet",
 		convformula = function(value) return value / 12 end,
 	},
 	["millimeter"] = {
-		idx = 4,
+		idx = 5,
 		name = "Millimeter (mm)",
 		sname = "mm",
 		lname = "millimeters",
 		convformula = function(value) return value * 25.4 end,
 	},
 	["centimeter"] = {
-		idx = 5,
+		idx = 6,
 		name = "Centimeter (cm)",
 		sname = "cm",
 		lname = "centimeters",
 		convformula = function(value) return value * 2.54 end,
 	},
 	["decimeter"] = {
-		idx = 6,
+		idx = 7,
 		name = "Decimeter (dm)",
 		sname = "dm",
 		lname = "decimeters",
 		convformula = function(value) return value / 3.937 end,
 	},
 	["meter"] = {
-		idx = 7,
+		idx = 8,
 		name = "Meter (m)",
 		sname = "m",
 		lname = "meters",
 		convformula = function(value) return value / 39.37 end,
 	},
 	["kilometer"] = {
-		idx = 8,
+		idx = 9,
 		name = "Kilometer (km)",
 		sname = "km",
 		lname = "kilometers",
 		convformula = function(value) return value / 39370 end,
 	},
 	["megameter"] = {
-		idx = 9,
+		idx = 10,
 		name = "Megameter (Mm)",
 		sname = "Mm",
 		lname = "megameters",
 		convformula = function(value) return value / 39370000 end,
 	},
 	["gigameter"] = {
-		idx = 10,
+		idx = 11,
 		name = "Gigameter (Gm)",
 		sname = "Gm",
 		lname = "gigameters",
 		convformula = function(value) return value / 39370000000 end,
 	},
 	["terameter"] = {
-		idx = 11,
+		idx = 12,
 		name = "Terameter (Tm)",
 		sname = "Tm",
 		lname = "terameters",
 		convformula = function(value) return value / 39370000000000. end,
 	},
 	["astrounit"] = {
-		idx = 12,
+		idx = 13,
 		name = "Astronomical Unit (AU)",
 		sname = "AU",
 		lname = "astronomical units",
 		convformula = function(value) return value / 5890000000000 end,
 	},
 	["lightyear"] = {
-		idx = 13,
+		idx = 14,
 		name = "Light-year (ly)",
 		sname = "ly",
 		lname = "light-year",
 		convformula = function(value) return value / 372500000000000000. end,
 	},
 	["parsec"] = {
-		idx = 14,
+		idx = 15,
 		name = "Parsec (pc)",
 		sname = "pc",
 		lname = "parsecs",
 		convformula = function(value) return value / 1215000000000000000. end,
 	},
 	["kiloparsec"] = {
-		idx = 15,
+		idx = 16,
 		name = "Kiloparsec (kpc)",
 		sname = "kpc",
 		lname = "kiloparsecs",
 		convformula = function(value) return value / 1215000000000000000000 end,
 	},
 	["megaparsec"] = {
-		idx = 16,
+		idx = 17,
 		name = "Megaparsec (Mpc)",
 		sname = "Mpc",
 		lname = "megaparsecs",
 		convformula = function(value) return value / 1215000000000000000000000 end,
 	},
 	["gigaparsec"] = {
-		idx = 17,
+		idx = 18,
 		name = "Gigaparsec (Gpc)",
 		sname = "Gpc",
 		lname = "gigaparsecs",
 		convformula = function(value) return value / 1215000000000000000000000000 end,
 	},--
 	["teraparsec"] = {
-		idx = 18,
+		idx = 19,
 		name = "Teraparsec (Tpc)",
 		sname = "Tpc",
 		lname = "teraparsecs",
 		convformula = function(value) return value / 1215000000000000000000000000000 end,
 	},--
 	["mile"] = {
-		idx = 19,
+		idx = 20,
 		name = "Mile (mi)",
 		sname = "mi",
 		lname = "Miles",
 		convformula = function(value) return value / 63360 end,
 	},
 	["naumile"] = {
-		idx = 20,
+		idx = 21,
 		name = "Nautic Mile (nm)",
 		sname = "nm",
 		lname = "Nautic Miles",
@@ -254,7 +261,7 @@ if CLIENT then
 		end
 
 		local function NotifyChat(txt)
-			chat.AddText(Color(255,255,0), "[-GRule-] ", color_white, "Distance: " .. txt)
+			chat.AddText(Color( 255, 128, 0), "[-GRule-] ", color_white, "Distance: " .. txt)
 		end
 
 		function GRule.FormatDistanceText(dist)
