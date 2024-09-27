@@ -12,9 +12,9 @@ This tool, apart of obviously getting the distance between 2 points, also provid
 
 # Installation
 
-To install this, you can directly download the ZIP and extract it into addons folder (likely to be located at garrysmod/addons).
+If you are a normal user and want to use this tool, i recommend you grab this tool on the [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3335380314&searchtext=) 
 
-Also, you can get this tool directly from the workshop (waiting for link)
+However, if you want to use the tool and also contribute, you can either clone this repository or directly download the ZIP (green button) and extract it into addons folder (likely to be located at garrysmod/addons).
 
 # Notes
 
