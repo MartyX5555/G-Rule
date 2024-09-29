@@ -19,6 +19,6 @@ And rather than guldelines, some considerations:
 3. Its possible some words can be longer than the intended space for the term for other languages. If you find any issue regarding to this, contact me.
 4. Take your time. No one is pressing to you in order to make it. A well done translation will be better than a bad one.
 
-And once you read  these points, now [read this page about how you can make it](https://wiki.facepunch.com/gmod/Addon_Localization#supportedlanguages) and [take this sample](https://github.com/MartyX5555/G-Rule/blob/main/resource/localization/en/grule.properties).
+And once you read  these points, now [read this page about how you can make it](https://wiki.facepunch.com/gmod/Addon_Localization#propertiesfiles) and [take this sample](https://github.com/MartyX5555/G-Rule/blob/main/resource/localization/en/grule.properties).
 
 When you finish your localization, create a pull request!
