@@ -3,8 +3,8 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "basicsnap"
-Mode.name = "Basic - Snap to prop"
-Mode.desc = "Performs a measure between 2 points, using a PA like snap on props."
+Mode.name = "#tool.gruletool.basicsnap.name"
+Mode.desc = "#tool.gruletool.basicsnap.desc"
 Mode.operation = 0
 Mode.hasparentpoints = true
 

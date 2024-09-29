@@ -3,8 +3,8 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "enttoent"
-Mode.name = "Entity to Entity"
-Mode.desc = "Chosen entities are the points. Measures data are updated on the fly."
+Mode.name = "#tool.gruletool.enttoent.name"
+Mode.desc = "#tool.gruletool.enttoent.desc"
 Mode.operation = 0
 
 local function SendPosition(idx, Entity, tool)

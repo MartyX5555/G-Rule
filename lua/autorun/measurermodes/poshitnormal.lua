@@ -3,8 +3,8 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "hitplane2"
-Mode.name = "HitPlane - Normalized Rect"
-Mode.desc = "The measure is done between point 1 and point 2, in one direction which is perpendicular to the normal of the 1st point."
+Mode.name = "#tool.gruletool.hitplane2.name"
+Mode.desc = "#tool.gruletool.hitplane2.desc"
 Mode.operation = 2
 
 local function SendPosition(idx, PointPos, HitNorm, tool)
@@ -88,7 +88,7 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function(
 			render.SetMaterial( mat )
 			render.DrawBox( Point1 + Normal1:GetNormalized() * 1, Normal1:Angle() + Angle(90,0,0), -size, size, Color(0,255,0) )
 
-			GRule.RenderCross("HitPlane", Point1, Color(0,167,6))
+			GRule.RenderCross("#tool.gruletool.overlay.hitplane", Point1, Color(0,167,6))
 		end
 
 		if Point1 and Point2 then
@@ -101,7 +101,7 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function(
 			local NewPos2 = LocalToWorld(newLVec, Angle(), Point1, Normal1:Angle())
 
 			GRule.CreateBasicRuleRect(Point1, NewPos2)
-			GRule.RenderCross("End Point!", NewPos2, Color(255,0,0))
+			GRule.RenderCross("#tool.gruletool.overlay.endpoint", NewPos2, Color(255,0,0))
 		end
 	end
 end)

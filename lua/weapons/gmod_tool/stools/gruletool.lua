@@ -38,22 +38,6 @@ if CLIENT then
 
 	}
 
-	language.Add( "tool.gruletool.name", "G-Rule" )
-	language.Add( "tool.gruletool.desc", "A tool used for measuring purposes." )
-
-	language.Add( "tool.gruletool.left_1", "Set the Point 1" )
-	language.Add( "tool.gruletool.right_1", "Set the Point 2" )
-
-	language.Add( "tool.gruletool.left_2", "Set the Point to start the backtrace." )
-
-	language.Add( "tool.gruletool.left_3", "Set the Point 1 and the Normal where the direction will be perpendicular to" )
-	language.Add( "tool.gruletool.right_3", "Set the Point 2 and Magnitude" )
-
-	language.Add( "tool.gruletool.left_4", "Sets the Point at a specific position" )
-	language.Add( "tool.gruletool.right_4", "Sets the Point at origin vector." )
-
-	language.Add( "tool.gruletool.reload", "Clear selection." )
-
 	surface.CreateFont( "GRule_ToolScreenTitle", { font = "HudDefault", size = 40, weight = 1000 } )
 	surface.CreateFont( "GRule_ToolScreenUnit", { font = "HudHintTextLarge", size = 25, weight = 750 } )
 
@@ -168,24 +152,24 @@ do
 
 		panel:Help("#tool.gruletool.desc")
 
-		panel:NumSlider( "Decimal count", "gruletool_roundcount", 0, 11, 0)
-		panel:ControlHelp( "Rounds the distances according to the decimal count." )
+		panel:NumSlider("#tool.gruletool.roundslider", "gruletool_roundcount", 0, 11, 0)
+		panel:ControlHelp("#tool.gruletool.roundtip" )
 
-		panel:CheckBox("Map Scale", "gruletool_mapscale")
-		panel:ControlHelp( "Uses the Architecture scale factor (1 unit = 0.75 inch)")
+		panel:CheckBox("#tool.gruletool.mapscalebox", "gruletool_mapscale")
+		panel:ControlHelp("#tool.gruletool.mapscaleboxtip")
 
-		panel:CheckBox("Full name", "gruletool_longname")
-		panel:ControlHelp( "Should the measure unit be fully displayed or not?")
+		panel:CheckBox("#tool.gruletool.fullnamebox", "gruletool_longname")
+		panel:ControlHelp("#tool.gruletool.fullnameboxtip")
 
-		local parentcheck = panel:CheckBox("Attach points to props", "gruletool_posparent")
-		panel:ControlHelp( "If applied on a prop, the point will be attached.")
+		local parentcheck = panel:CheckBox("#tool.gruletool.posparentbox", "gruletool_posparent")
+		panel:ControlHelp("#tool.gruletool.posparentboxtip")
 
 		CreateSpacer(panel)
 
 		do
 			-- Unit Measurement ComboBox
 			local combo = vgui.Create( "DComboBox" )
-			combo:SetTooltip( "Choose the unit. Hammer Units are not affected by the current unit scale." )
+			combo:SetTooltip( "#tool.gruletool.unitcombotip" )
 			combo:SetSortItems( false )
 			panel:AddItem(combo)
 
@@ -217,7 +201,7 @@ do
 			local Mode = ToolModes[GetClientInfo("mode")]
 			-- Rule Mode ComboBox
 			local modecombo = vgui.Create( "DComboBox" )
-			modecombo:SetTooltip( "Choose the mode this tool will operate." )
+			modecombo:SetTooltip( "#tool.gruletool.modecombotip" )
 			panel:AddItem(modecombo)
 
 			-- Populate the array with elements containing both key and value pairs
@@ -254,9 +238,9 @@ do
 
 		CreateSpacer(panel)
 
-		panel:Help("Documentation about this tool can be found here.")
+		panel:Help("#tool.gruletool.documentation")
 		local HelpButton = vgui.Create("DButton", panel)
-		HelpButton:SetText("See documentation")
+		HelpButton:SetText("#tool.gruletool.documentation.button")
 		HelpButton:SetIcon("icon16/book_open.png")
 		function HelpButton:DoClick()
 			gui.OpenURL("https://github.com/MartyX5555/G-Rule/wiki")
@@ -288,13 +272,15 @@ do
 	end
 
 	function TOOL:DrawToolScreen( width, height )
-		--if true then return end
 
 		local CMode = GetClientInfo("mode")
 		local modedata = GRule.GetModeInfo(CMode)
 
 		local CUnit = GetClientInfo("unit")
 		local unitdata = GRule.GetUnitInfo(CUnit)
+
+		local currentmode = language.GetPhrase( "#tool.gruletool.currentmode" )
+		local realName = language.GetPhrase( modedata.name ) -- otherwise, we have the raw placeholder string instead.
 
 		-- Draw black background
 		surface.SetDrawColor( BackGroundCol )
@@ -313,18 +299,23 @@ do
 		end
 
 		do
-			if #modedata.name > 10 then
+
+			-- expand the black background.
+			if #realName > 13 then
 				surface.SetDrawColor( BackGroundPanelCol )
 				surface.DrawRect( 0, 60, width, 80 )
-				draw.SimpleText( "Current mode", "HudDefault", width / 2, 70, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.SimpleText( currentmode, "HudDefault", width / 2, 70, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
-				DrawScrollingText(  modedata.name, 110, 256 )
 			else
-
 				draw.RoundedBox( 14, blockmargin, 60, width - (blockmargin * 2), 80, BackGroundPanelCol )
-				draw.SimpleText( "Current mode", "HudDefault", width / 2, 70, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.SimpleText( currentmode, "HudDefault", width / 2, 70, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+			end
 
-				draw.SimpleText( modedata.name, "GRule_ToolScreenTitle", width / 2, 110, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+			-- start scrolling the text if its longer than specified
+			if #realName > 14 then
+				DrawScrollingText( realName, 110, 256 )
+			else
+				draw.SimpleText( realName, "GRule_ToolScreenTitle", width / 2, 110, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 			end
 		end
 		do
@@ -334,12 +325,12 @@ do
 		end
 		do
 
-			local scale = GetClientValue("mapscale") > 0 and "Map Scale" or "Player Scale"
+			local scale = GetClientValue("mapscale") > 0 and language.GetPhrase("#tool.gruletool.signalmap") or language.GetPhrase("#tool.gruletool.signalplayer")
 			if CUnit == "unit" then
-				scale = "Not applicable"
+				scale = language.GetPhrase("#tool.gruletool.signalnoscale")
 			end
 
-			local scaletxt = "Scale: " .. scale
+			local scaletxt = language.GetPhrase("#tool.gruletool.currentscale") .. ": " .. scale
 			draw.RoundedBox( 14, blockmargin, 200, width - (blockmargin * 2), 50, BackGroundPanelCol )
 			draw.SimpleText( scaletxt , "GRule_ToolScreenUnit", width / 2, 225, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 

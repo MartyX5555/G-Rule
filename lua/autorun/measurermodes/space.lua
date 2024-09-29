@@ -3,8 +3,8 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "space"
-Mode.name = "Space Mode"
-Mode.desc = "Gets the measure either from an arbitrary position or vector origin to the player. Useful for space measurement tasks in infinite maps.\n\n"
+Mode.name = "#tool.gruletool.space.name"
+Mode.desc = "#tool.gruletool.space.desc"
 Mode.operation = 3
 
 local function SendPosition(idx, PointPos, tool)
@@ -58,33 +58,33 @@ end
 
 function Mode.CPanelCustom(panel)
 
-	panel:SetName("Manual controls")
-	panel:Help("If you are too far and the traces of the tool don't work, you can set the points here, based at your current position.")
+	panel:SetName("#tool.gruletool.space.subpanel.title")
+	panel:Help("#tool.gruletool.space.subpanel.desc")
 
 	local ply = LocalPlayer()
 	local PointButton1 = vgui.Create("DButton", panel)
-	PointButton1:SetText("Set Point 1")
+	PointButton1:SetText("#tool.gruletool.space.subpanel.button.1")
 	function PointButton1:DoClick()
 		updatePoint(1, ply)
 	end
 	panel:AddItem(PointButton1)
 
 	local PointButton2 = vgui.Create("DButton", panel)
-	PointButton2:SetText("Set Point 2")
+	PointButton2:SetText("#tool.gruletool.space.subpanel.button.2")
 	function PointButton2:DoClick()
 		updatePoint(2, ply)
 	end
 	panel:AddItem(PointButton2)
 
 	local PlyButton1 = vgui.Create("DButton", panel)
-	PlyButton1:SetText("Point 1 follow Player")
+	PlyButton1:SetText("#tool.gruletool.space.subpanel.button.follow.1")
 	function PlyButton1:DoClick()
 		GRule.CPoints[1] = nil
 	end
 	panel:AddItem(PlyButton1)
 
 	local PlyButton2 = vgui.Create("DButton", panel)
-	PlyButton2:SetText("Point 2 follow Player")
+	PlyButton2:SetText("#tool.gruletool.space.subpanel.button.follow.2")
 	function PlyButton2:DoClick()
 		GRule.CPoints[2] = nil
 	end
@@ -100,7 +100,7 @@ function Mode.CPanelCustom(panel)
 	panel:AddItem(Spacer)
 
 	local ClearButton = vgui.Create("DButton", panel)
-	ClearButton:SetText("Clear Points")
+	ClearButton:SetText("#tool.gruletool.space.subpanel.button.clear")
 	ClearButton:SetIcon("icon16/cancel.png")
 	function ClearButton:DoClick()
 		GRule.CPoints = {}

@@ -3,8 +3,8 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "basic"
-Mode.name = "Basic"
-Mode.desc = "Performs a measure between 2 points. Becomes very useful if paired with smartsnap"
+Mode.name = "#tool.gruletool.basic.name"
+Mode.desc = "#tool.gruletool.basic.desc"
 Mode.operation = 0
 Mode.hasparentpoints = true
 

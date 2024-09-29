@@ -3,8 +3,8 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "hitplane"
-Mode.name = "HitPlane - between 2 walls"
-Mode.desc = "The measure is performed between the position where you did hit, and a perpendicular generated position behind of it, where did hit."
+Mode.name = "#tool.gruletool.hitplane.name"
+Mode.desc = "#tool.gruletool.hitplane.desc"
 Mode.operation = 1
 
 local function SendPosition(idx, PointPos, tool)
@@ -80,11 +80,11 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlaneRendering", function()
 		end
 
 		if Point1 then
-			GRule.RenderCross("HitPlane", Point1, Color(0,167,6))
+			GRule.RenderCross("#tool.gruletool.overlay.hitplane", Point1, Color(0,167,6))
 		end
 
 		if Point2 then
-			GRule.RenderCross("End Point!", Point2, Color(255,0,0))
+			GRule.RenderCross("#tool.gruletool.overlay.endpoint", Point2, Color(255,0,0))
 		end
 
 		if Point1 and Point2 then
