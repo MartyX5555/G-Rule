@@ -46,146 +46,183 @@ GRule.UnitConversion = {
 		name = "#tool.gruletool.unit.unit",
 		sname = "#tool.gruletool.unit.sunit",
 		lname = "#tool.gruletool.unit.lunit",
+		mapscale = false,
 		convformula = function(value) return value end,
 	},
-	["inch"] = {
+	["block"] = {
 		idx = 2,
+		name = "#tool.gruletool.unit.block",
+		sname = "#tool.gruletool.unit.sblock",
+		lname = "#tool.gruletool.unit.lblock",
+		mapscale = false,
+		convformula = function(value) return value / 47.45 end,
+	},
+	["plate"] = {
+		idx = 3,
+		name = "#tool.gruletool.unit.plate",
+		sname = "#tool.gruletool.unit.splate",
+		lname = "#tool.gruletool.unit.lplate",
+		mapscale = false,
+		convformula = function(value) return value / 3 end,
+	},
+	["inch"] = {
+		idx = 4,
 		name = "#tool.gruletool.unit.inch",
 		sname = "#tool.gruletool.unit.sinch",
 		lname = "#tool.gruletool.unit.linch",
+		mapscale = true,
 		convformula = function(value) return value end,
 	},
 	["yard"] = {
-		idx = 3,
+		idx = 5,
 		name = "#tool.gruletool.unit.yard",
 		sname = "#tool.gruletool.unit.syard",
 		lname = "#tool.gruletool.unit.lyard",
+		mapscale = true,
 		convformula = function(value) return value / 36 end,
 	},
 	["feet"] = {
-		idx = 4,
+		idx = 6,
 		name = "#tool.gruletool.unit.feet",
 		sname = "#tool.gruletool.unit.sfeet",
 		lname = "#tool.gruletool.unit.lfeet",
+		mapscale = true,
 		convformula = function(value) return value / 12 end,
 	},
 	["millimeter"] = {
-		idx = 5,
+		idx = 7,
 		name = "#tool.gruletool.unit.millimeter",
 		sname = "#tool.gruletool.unit.smillimeter",
 		lname = "#tool.gruletool.unit.lmillimeter",
+		mapscale = true,
 		convformula = function(value) return value * 25.4 end,
 	},
 	["centimeter"] = {
-		idx = 6,
+		idx = 8,
 		name = "#tool.gruletool.unit.centimeter",
 		sname = "#tool.gruletool.unit.scentimeter",
 		lname = "#tool.gruletool.unit.lcentimeter",
+		mapscale = true,
 		convformula = function(value) return value * 2.54 end,
 	},
 	["decimeter"] = {
-		idx = 7,
+		idx = 9,
 		name = "#tool.gruletool.unit.decimeter",
 		sname = "#tool.gruletool.unit.sdecimeter",
 		lname = "#tool.gruletool.unit.ldecimeter",
+		mapscale = true,
 		convformula = function(value) return value / 3.937 end,
 	},
 	["meter"] = {
-		idx = 8,
+		idx = 10,
 		name = "#tool.gruletool.unit.meter",
 		sname = "#tool.gruletool.unit.smeter",
 		lname = "#tool.gruletool.unit.lmeter",
+		mapscale = true,
 		convformula = function(value) return value / 39.37 end,
 	},
 	["kilometer"] = {
-		idx = 9,
+		idx = 11,
 		name = "#tool.gruletool.unit.kilometer",
 		sname = "#tool.gruletool.unit.skilometer",
 		lname = "#tool.gruletool.unit.lkilometer",
+		mapscale = true,
 		convformula = function(value) return value / 39370 end,
 	},
 	["megameter"] = {
-		idx = 10,
+		idx = 12,
 		name = "#tool.gruletool.unit.megameter",
 		sname = "#tool.gruletool.unit.smegameter",
 		lname = "#tool.gruletool.unit.lmegameter",
+		mapscale = true,
 		convformula = function(value) return value / 39370000 end,
 	},
 	["gigameter"] = {
-		idx = 11,
+		idx = 13,
 		name = "#tool.gruletool.unit.gigameter",
 		sname = "#tool.gruletool.unit.sgigameter",
 		lname = "#tool.gruletool.unit.lgigameter",
+		mapscale = true,
 		convformula = function(value) return value / 39370000000 end,
 	},
 	["terameter"] = {
-		idx = 12,
+		idx = 14,
 		name = "#tool.gruletool.unit.terameter",
 		sname = "#tool.gruletool.unit.sterameter",
 		lname = "#tool.gruletool.unit.lterameter",
+		mapscale = true,
 		convformula = function(value) return value / 39370000000000. end,
 	},
 	["astrounit"] = {
-		idx = 13,
+		idx = 15,
 		name = "#tool.gruletool.unit.astrounit",
 		sname = "#tool.gruletool.unit.sastrounit",
 		lname = "#tool.gruletool.unit.lastrounit",
+		mapscale = true,
 		convformula = function(value) return value / 5890000000000 end,
 	},
 	["lightyear"] = {
-		idx = 14,
+		idx = 16,
 		name = "#tool.gruletool.unit.lightyear",
 		sname = "#tool.gruletool.unit.slightyear",
 		lname = "#tool.gruletool.unit.llightyear",
+		mapscale = true,
 		convformula = function(value) return value / 372500000000000000. end,
 	},
 	["parsec"] = {
-		idx = 15,
+		idx = 17,
 		name = "#tool.gruletool.unit.parsec",
 		sname = "#tool.gruletool.unit.sparsec",
 		lname = "#tool.gruletool.unit.lparsec",
+		mapscale = true,
 		convformula = function(value) return value / 1215000000000000000. end,
 	},
 	["kiloparsec"] = {
-		idx = 16,
+		idx = 18,
 		name = "#tool.gruletool.unit.kiloparsec",
 		sname = "#tool.gruletool.unit.skiloparsec",
 		lname = "#tool.gruletool.unit.lkiloparsec",
+		mapscale = true,
 		convformula = function(value) return value / 1215000000000000000000 end,
 	},
 	["megaparsec"] = {
-		idx = 17,
+		idx = 19,
 		name = "#tool.gruletool.unit.megaparsec",
 		sname = "#tool.gruletool.unit.smegaparsec",
 		lname = "#tool.gruletool.unit.lmegaparsec",
+		mapscale = true,
 		convformula = function(value) return value / 1215000000000000000000000 end,
 	},
 	["gigaparsec"] = {
-		idx = 18,
+		idx = 20,
 		name = "#tool.gruletool.unit.gigaparsec",
 		sname = "#tool.gruletool.unit.sgigaparsec",
 		lname = "#tool.gruletool.unit.lgigaparsec",
+		mapscale = true,
 		convformula = function(value) return value / 1215000000000000000000000000 end,
-	},--
+	},
 	["teraparsec"] = {
-		idx = 19,
+		idx = 21,
 		name = "#tool.gruletool.unit.teraparsec",
 		sname = "#tool.gruletool.unit.steraparsec",
 		lname = "#tool.gruletool.unit.lteraparsec",
+		mapscale = true,
 		convformula = function(value) return value / 1215000000000000000000000000000 end,
-	},--
+	},
 	["mile"] = {
-		idx = 20,
+		idx = 22,
 		name = "#tool.gruletool.unit.mile",
 		sname = "#tool.gruletool.unit.smile",
 		lname = "#tool.gruletool.unit.lmile",
+		mapscale = true,
 		convformula = function(value) return value / 63360 end,
 	},
 	["naumile"] = {
-		idx = 21,
+		idx = 23,
 		name = "#tool.gruletool.unit.naumile",
 		sname = "#tool.gruletool.unit.snaumile",
 		lname = "#tool.gruletool.unit.lnaumile",
+		mapscale = true,
 		convformula = function(value) return value / 72910 end,
 	},
 }
@@ -264,10 +301,12 @@ if CLIENT then
 			chat.AddText(Color( 255, 128, 0), "[-GRule-] ", color_white, language.GetPhrase("#tool.gruletool.distancenotify") .. ": " .. txt)
 		end
 
+		local function GetSelectedUnitData()
+			return GRule.GetUnitInfo(GetClientInfo("unit"))
+		end
+
 		function GRule.FormatDistanceText(dist)
-			local UnitTable   = GRule.UnitConversion
-			local CUnit       = GetClientInfo("unit")
-			local UnitData    = next(UnitTable) and UnitTable[CUnit] or UnitTable["unit"]
+			local UnitData    = GetSelectedUnitData()
 			local toUnit      = UnitData.convformula
 			local roundCount  = GetClientValue("roundcount") or 0
 			local Fdist 	  = math.Round(toUnit(dist), roundCount)
@@ -299,7 +338,7 @@ if CLIENT then
 		-- Create a simple rect between 2 points.
 		function GRule.CreateBasicRuleRect(Pos1, Pos2)
 
-			local factor = (GetClientValue("mapscale") > 0 and GetClientInfo("unit") ~= "unit") and 0.75 or 1
+			local factor = (GetClientValue("mapscale") > 0 and GetSelectedUnitData().mapscale) and 0.75 or 1
 			local dir = (Pos2 - Pos1)
 			local dist = dir:Length() * factor
 

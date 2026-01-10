@@ -10,6 +10,14 @@ if CLIENT then
 	AddLanguage( "tool.gruletool.unit.sunit", "unit" )
 	AddLanguage( "tool.gruletool.unit.lunit", "hammer units" )
 
+	AddLanguage( "tool.gruletool.unit.block", "Hunter Block (bl)" )
+	AddLanguage( "tool.gruletool.unit.sblock", "bl" )
+	AddLanguage( "tool.gruletool.unit.lblock", "hunter blocks" )
+
+	AddLanguage( "tool.gruletool.unit.plate", "Hunter Plate (pl)" )
+	AddLanguage( "tool.gruletool.unit.splate", "pl" )
+	AddLanguage( "tool.gruletool.unit.lplate", "hunter plates" )
+
 	AddLanguage( "tool.gruletool.unit.inch", "Inch (in)" )
 	AddLanguage( "tool.gruletool.unit.sinch", "in" )
 	AddLanguage( "tool.gruletool.unit.linch", "inches" )
