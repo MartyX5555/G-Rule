@@ -38,7 +38,7 @@ function Mode.ReceivePosition(data)
 end
 
 function Mode.LeftClick(tool, trace)
-	local HitPos = trace.HitPos
+	local HitPos = GRule.GetPreciseHitPos(trace)
 	local Entity = trace.Entity
 
 	-- We will send the local vector instead.
@@ -52,7 +52,7 @@ function Mode.LeftClick(tool, trace)
 end
 
 function Mode.RightClick(tool, trace)
-	local HitPos = trace.HitPos
+	local HitPos = GRule.GetPreciseHitPos(trace)
 	local Entity = trace.Entity
 
 	-- We will send the local vector instead.

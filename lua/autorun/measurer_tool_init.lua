@@ -39,7 +39,7 @@ GRule.CPoints = GRule.CPoints or {}
 GRule.HitNormals = GRule.HitNormals or {}
 GRule.Timers = GRule.Timers or {}
 
--- Conversion table. All the formulas below are based FROM the inche TO [unit here]. Credits to google and its unit converter
+-- Conversion table. All the formulas below are based FROM the inch TO [unit here]. Credits to google and its unit converter
 GRule.UnitConversion = {
 	["unit"] = {
 		idx = 1,
@@ -224,6 +224,22 @@ do
 		return IsReallyValidTable(Units[unit]) and Units[unit] or Units["unit"]
 	end
 
+	--[[
+		Traces add a few units (0.03125 to be exact) on top of the hit position, causing small but not negligible errors, especially when we are measuring small distances. 
+		To mitigate this issue, we will do a small ray-plane intersection to get the precise hit position on the surface, this way we can get rid of the trace's precision issues and get a more accurate measurement.
+	]]
+	function GRule.GetPreciseHitPos(trace)
+		local HitPos = trace.HitPos
+		local HitNormal = trace.HitNormal
+
+		local ToSurface = HitNormal * 0.03125
+		local StartSurface = HitPos - ToSurface
+
+		-- The plane will represent the surface of the hit, and we will intersect it with a ray that starts from the hitpos and goes in the direction of the normal, this way we can get a more precise hitpos that is not affected by the trace's precision issues.
+		HitPos = util.IntersectRayWithPlane( HitPos, -HitNormal * 10, StartSurface, HitNormal ) or HitPos -- if the intersection fails for some reason, we will just return the original hitpos, but it should not happen.
+		return HitPos
+	end
+
 end
 
 
@@ -289,7 +305,9 @@ if CLIENT then
 			local UnitData    = GetSelectedUnitData()
 			local toUnit      = UnitData.convformula
 			local roundCount  = GetClientValue("roundcount") or 0
-			local Fdist 	  = math.Round(toUnit(dist), roundCount)
+			local toUnitDist   = toUnit(dist)
+			toUnitDist = math.IsNearlyEqual(toUnitDist,math.Round(toUnitDist),1e-4) and math.Round(toUnitDist) or toUnitDist
+			local Fdist 	  = math.Round(toUnitDist, roundCount)
 			local UnitName    = GetClientValue("longname") > 0 and UnitData.lname or UnitData.sname
 
 			local txt = Fdist .. " " .. language.GetPhrase(UnitName)
@@ -342,7 +360,7 @@ if CLIENT then
 			local Dist2D = avgPos:ToScreen()
 			local formatteddist = GRule.FormatDistanceText( dist )
 
-			local angles = dir:Angle()
+			local angles = dir:GetNormalized():Angle()
 			angles:Normalize()
 			local formattedang = language.GetPhrase("#tool.gruletool.overlay.angle") .. ": " .. tostring(angles)
 

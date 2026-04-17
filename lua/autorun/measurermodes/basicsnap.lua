@@ -112,7 +112,7 @@ local function GetNearestSnapPos(HitPos, Ent)
 end
 
 function Mode.LeftClick(tool, trace)
-	local HitPos = trace.HitPos
+	local HitPos = GRule.GetPreciseHitPos(trace)
 	local Ent = trace.Entity
 
 	if IsValid(Ent) then
@@ -130,7 +130,7 @@ function Mode.LeftClick(tool, trace)
 end
 
 function Mode.RightClick(tool, trace)
-	local HitPos = trace.HitPos
+	local HitPos = GRule.GetPreciseHitPos(trace)
 	local Ent = trace.Entity
 
 	if IsValid(Ent) then

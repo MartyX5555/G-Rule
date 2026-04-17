@@ -40,12 +40,12 @@ function Mode.ReceivePosition(data)
 end
 
 function Mode.LeftClick(tool, trace)
-	local HitPos = trace.HitPos
+	local HitPos = GRule.GetPreciseHitPos(trace)
 	SendPosition(1, HitPos, trace.HitNormal, tool)
 end
 
 function Mode.RightClick(tool, trace)
-	local HitPos = trace.HitPos
+	local HitPos = GRule.GetPreciseHitPos(trace)
 	SendPosition(2, HitPos, trace.HitNormal, tool)
 end
 

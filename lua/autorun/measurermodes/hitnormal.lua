@@ -32,7 +32,7 @@ function Mode.ReceivePosition(data)
 end
 
 function Mode.LeftClick(tool, trace)
-	local HitPos = trace.HitPos
+	local HitPos = GRule.GetPreciseHitPos(trace)
 
 	local backtrace = util.TraceLine({
 		start = HitPos,
@@ -41,7 +41,7 @@ function Mode.LeftClick(tool, trace)
 	})
 
 	SendPosition(1, HitPos, tool)
-	SendPosition(2, backtrace.HitPos, tool)
+	SendPosition(2, GRule.GetPreciseHitPos(backtrace), tool)
 
 end
 
