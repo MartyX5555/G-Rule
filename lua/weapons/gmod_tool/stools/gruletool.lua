@@ -326,7 +326,7 @@ do
 		do
 
 			local scale = GetClientValue("mapscale") > 0 and language.GetPhrase("#tool.gruletool.signalmap") or language.GetPhrase("#tool.gruletool.signalplayer")
-			if CUnit == "unit" then
+			if unitdata.noscale then
 				scale = language.GetPhrase("#tool.gruletool.signalnoscale")
 			end
 
