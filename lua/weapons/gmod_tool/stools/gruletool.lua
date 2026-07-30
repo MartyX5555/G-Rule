@@ -8,6 +8,7 @@ TOOL.ClientConVar["roundcount"] = 2
 TOOL.ClientConVar["longname"] = 0
 TOOL.ClientConVar["mapscale"] = 0
 TOOL.ClientConVar["posparent"] = 0
+TOOL.ClientConVar["snapmode"] = "none"
 
 if SERVER then
 	util.AddNetworkString("GRule_Network")
@@ -124,16 +125,6 @@ end
 
 do
 
-	local function CreateSpacer(panel)
-		local Spacer = vgui.Create("DLabel", panel)
-		Spacer:SetSize( ScrW(), 20 ) -- CONCERN: no clue how to get controlpanel Height. Using the manual way.
-		Spacer:SetText("")
-		function Spacer:Paint(w, h)
-			draw.RoundedBox( 5, 0, h / 2, w, 2, Color(150,150,150) )
-		end
-		panel:AddItem(Spacer)
-	end
-
 	local function createSubPanel(panel, CMode)
 
 		panel.subpanel:Clear()
@@ -161,10 +152,10 @@ do
 		panel:CheckBox("#tool.gruletool.fullnamebox", "gruletool_longname")
 		panel:ControlHelp("#tool.gruletool.fullnameboxtip")
 
-		local parentcheck = panel:CheckBox("#tool.gruletool.posparentbox", "gruletool_posparent")
-		panel:ControlHelp("#tool.gruletool.posparentboxtip")
+		--local parentcheck = panel:CheckBox("#tool.gruletool.posparentbox", "gruletool_posparent")
+		--panel:ControlHelp("#tool.gruletool.posparentboxtip")
 
-		CreateSpacer(panel)
+		GRule.CreateUISpacer(panel)
 
 		do
 			-- Unit Measurement ComboBox
@@ -220,7 +211,7 @@ do
 				timer.Simple(0.05,function()
 					local CMode = ToolModes[GetClientInfo("mode")]
 					desc:SetText(CMode.desc)
-					parentcheck:SetEnabled( CMode.hasparentpoints )
+					--parentcheck:SetEnabled( CMode.hasparentpoints )
 
 					createSubPanel(panel, CMode)
 
@@ -228,7 +219,7 @@ do
 				end)
 
 			end
-			parentcheck:SetEnabled( Mode.hasparentpoints )
+			--parentcheck:SetEnabled( Mode.hasparentpoints )
 
 			panel.subpanel = vgui.Create("DForm", panel)
 			panel:AddItem(panel.subpanel)
@@ -236,7 +227,7 @@ do
 			createSubPanel(panel, Mode)
 		end
 
-		CreateSpacer(panel)
+		GRule.CreateUISpacer(panel)
 
 		panel:Help("#tool.gruletool.documentation")
 		local HelpButton = vgui.Create("DButton", panel)

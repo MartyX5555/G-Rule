@@ -371,6 +371,7 @@ if CLIENT then
 				end
 			cam.End2D()
 
+			render.DrawLine(Pos1, Pos2, Color(255,100,0), false )
 			render.DrawLine(Pos1, Pos2, color_white, true )
 
 			if GRule.CanPing then
@@ -378,10 +379,21 @@ if CLIENT then
 				NotifyChat(formatteddist)
 			end
 		end
+
+		function GRule.CreateUISpacer(panel)
+			local Spacer = vgui.Create("DLabel", panel)
+			Spacer:SetSize( ScrW(), 20 ) -- CONCERN: no clue how to get controlpanel Height. Using the manual way.
+			Spacer:SetText("")
+			function Spacer:Paint(w, h)
+				draw.RoundedBox( 5, 0, h / 2, w, 2, Color(150,150,150) )
+			end
+			panel:AddItem(Spacer)
+		end
 	end
 end
 
 include("autorun/measurermodes/basic.lua")
+include("autorun/measurermodes/basicexperimental.lua")
 include("autorun/measurermodes/basicsnap.lua")
 include("autorun/measurermodes/hitnormal.lua")
 include("autorun/measurermodes/poshitnormal.lua")
