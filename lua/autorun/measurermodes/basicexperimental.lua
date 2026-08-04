@@ -3,7 +3,7 @@ AddCSLuaFile()
 local Mode = {}
 
 Mode.id = "basicexperimental"
-Mode.name = "Experimental Basic"
+Mode.name = "Point to Point"
 Mode.desc = "#tool.gruletool.basic.desc"
 Mode.operation = 0
 Mode.hasparentpoints = true
@@ -39,6 +39,7 @@ end
 
 local SnapModes = {
 	none = {
+		order = 0,
 		name = "None",
 		desc = "No snap. Allows free placement.",
 		snapfunction = function(HitPos, Ent)
@@ -46,8 +47,9 @@ local SnapModes = {
 		end
 	},
 	pa = {
-		name = "PA Snap",
-		desc = "Uses a Precision Alignment like Snap.",
+		order = 1,
+		name = "PA Style",
+		desc = "Uses a Precision Alignment like Snap mode. Formely the 'Basic - Snap to prop'",
 		snapfunction = function(HitPos, Ent)
 			if not IsValid(Ent) then return HitPos end
 			local LPos = Ent:WorldToLocal(HitPos)
@@ -121,7 +123,39 @@ local SnapModes = {
 			end
 		end
 	},
+	vertex = {
+		order = 2,
+		name = "By Vertex",
+		desc = "Uses current Entity's mesh vertex for alignment.",
+		snapfunction = function(HitPos, Ent)
+			if not IsValid(Ent) then return HitPos end
+			local physobj = Ent:GetPhysicsObject()
+			if not IsValid(physobj) then return HitPos end
+			local meshes = physobj:GetMeshConvexes()
+
+			local SnapPos = HitPos
+			local shortestDistSqr = math.huge
+
+			for i = 1, #meshes do
+				local convex = meshes[i]
+				for j = 1, #convex do
+					local vertexPos = convex[j].pos print("vertexPos", vertexPos)
+					local currentDistSqr = Ent:WorldToLocal(HitPos):DistToSqr(vertexPos)
+
+					-- Si esta distancia es menor a la que teníamos guardada, actualizamos
+					if currentDistSqr < shortestDistSqr then
+						shortestDistSqr = currentDistSqr
+						SnapPos = vertexPos
+						--debugoverlay.Cross(Ent:LocalToWorld(SnapPos), 2, 1, color_white, true)
+					end
+				end
+			end
+
+			return Ent:LocalToWorld(SnapPos)
+		end
+	},
 }
+--table.sort(SnapModes, function(a, b) return a.order < b.order end)
 
 local function GetClientInfo(convar)
 	local c = "gruletool_" .. convar
@@ -185,6 +219,8 @@ function Mode.CPanelCustom(panel)
 
 	local combobox = vgui.Create("DComboBox", panel)
 	combobox:SetValue(initial_snapdata.name)
+	combobox:SetTooltip( "Choose a snap mode." )
+	combobox:SetSortItems( false )
 	for modeid, modedata in pairs(SnapModes) do
 		combobox:AddChoice(modedata.name, modeid)
 	end
@@ -193,7 +229,7 @@ function Mode.CPanelCustom(panel)
 	function combobox:OnSelect( index, value, data )
 		local snapdata = SnapModes[data]
 		curdesc:SetText(snapdata.desc)
-		RunConsoleCommand("gruletool_snapmode", data) print("applying data....", data)
+		RunConsoleCommand("gruletool_snapmode", data)
 	end
 
 	GRule.CreateUISpacer(panel)
