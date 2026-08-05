@@ -156,7 +156,6 @@ local SnapModes = {
 		end
 	},
 }
---table.sort(SnapModes, function(a, b) return a.order < b.order end)
 
 local function GetClientInfo(convar)
 	local c = "gruletool_" .. convar

@@ -55,7 +55,7 @@ do
 			MsgC(Color(255, 0, 0), "[-GRule-] - The chosen Operation mode '" .. mode .. "' is invalid! Using 'basic' mode...", "\n")
 			return ToolModes["basic"]
 		end
-		
+
 		return ToolModes[mode]
 	end
 
