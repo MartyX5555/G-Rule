@@ -32,180 +32,15 @@
 
 ]]
 
-GRule = GRule or {}
+local GRule = GRule
 
 GRule.ToolModes = GRule.ToolModes or {}
 GRule.CPoints = GRule.CPoints or {}
+GRule.CHighlightEnts = GRule.CHighlightEnts or {}
 GRule.HitNormals = GRule.HitNormals or {}
 GRule.Timers = GRule.Timers or {}
+GRule.UnitConversion = GRule.UnitConversion or {}
 
--- Conversion table. All the formulas below are based FROM the inch TO [unit here]. Credits to google and its unit converter
-GRule.UnitConversion = {
-	["unit"] = {
-		idx = 1,
-		name = "#tool.gruletool.unit.unit",
-		sname = "#tool.gruletool.unit.sunit",
-		lname = "#tool.gruletool.unit.lunit",
-		noscale = true,
-		convformula = function(value) return value end,
-	},
-	["block"] = {
-		idx = 2,
-		name = "#tool.gruletool.unit.block",
-		sname = "#tool.gruletool.unit.sblock",
-		lname = "#tool.gruletool.unit.lblock",
-		noscale = true,
-		convformula = function(value) return value / 47.45 end,
-	},
-	["plate"] = {
-		idx = 3,
-		name = "#tool.gruletool.unit.plate",
-		sname = "#tool.gruletool.unit.splate",
-		lname = "#tool.gruletool.unit.lplate",
-		noscale = true,
-		convformula = function(value) return value / 3 end,
-	},
-	["inch"] = {
-		idx = 4,
-		name = "#tool.gruletool.unit.inch",
-		sname = "#tool.gruletool.unit.sinch",
-		lname = "#tool.gruletool.unit.linch",
-		convformula = function(value) return value end,
-	},
-	["yard"] = {
-		idx = 5,
-		name = "#tool.gruletool.unit.yard",
-		sname = "#tool.gruletool.unit.syard",
-		lname = "#tool.gruletool.unit.lyard",
-		convformula = function(value) return value / 36 end,
-	},
-	["feet"] = {
-		idx = 6,
-		name = "#tool.gruletool.unit.feet",
-		sname = "#tool.gruletool.unit.sfeet",
-		lname = "#tool.gruletool.unit.lfeet",
-		convformula = function(value) return value / 12 end,
-	},
-	["millimeter"] = {
-		idx = 7,
-		name = "#tool.gruletool.unit.millimeter",
-		sname = "#tool.gruletool.unit.smillimeter",
-		lname = "#tool.gruletool.unit.lmillimeter",
-		convformula = function(value) return value * 25.4 end,
-	},
-	["centimeter"] = {
-		idx = 8,
-		name = "#tool.gruletool.unit.centimeter",
-		sname = "#tool.gruletool.unit.scentimeter",
-		lname = "#tool.gruletool.unit.lcentimeter",
-		convformula = function(value) return value * 2.54 end,
-	},
-	["decimeter"] = {
-		idx = 9,
-		name = "#tool.gruletool.unit.decimeter",
-		sname = "#tool.gruletool.unit.sdecimeter",
-		lname = "#tool.gruletool.unit.ldecimeter",
-		convformula = function(value) return value / 3.937 end,
-	},
-	["meter"] = {
-		idx = 10,
-		name = "#tool.gruletool.unit.meter",
-		sname = "#tool.gruletool.unit.smeter",
-		lname = "#tool.gruletool.unit.lmeter",
-		convformula = function(value) return value / 39.37 end,
-	},
-	["kilometer"] = {
-		idx = 11,
-		name = "#tool.gruletool.unit.kilometer",
-		sname = "#tool.gruletool.unit.skilometer",
-		lname = "#tool.gruletool.unit.lkilometer",
-		convformula = function(value) return value / 39370 end,
-	},
-	["megameter"] = {
-		idx = 12,
-		name = "#tool.gruletool.unit.megameter",
-		sname = "#tool.gruletool.unit.smegameter",
-		lname = "#tool.gruletool.unit.lmegameter",
-		convformula = function(value) return value / 39370000 end,
-	},
-	["gigameter"] = {
-		idx = 13,
-		name = "#tool.gruletool.unit.gigameter",
-		sname = "#tool.gruletool.unit.sgigameter",
-		lname = "#tool.gruletool.unit.lgigameter",
-		convformula = function(value) return value / 39370000000 end,
-	},
-	["terameter"] = {
-		idx = 14,
-		name = "#tool.gruletool.unit.terameter",
-		sname = "#tool.gruletool.unit.sterameter",
-		lname = "#tool.gruletool.unit.lterameter",
-		convformula = function(value) return value / 39370000000000. end,
-	},
-	["astrounit"] = {
-		idx = 15,
-		name = "#tool.gruletool.unit.astrounit",
-		sname = "#tool.gruletool.unit.sastrounit",
-		lname = "#tool.gruletool.unit.lastrounit",
-		convformula = function(value) return value / 5890000000000 end,
-	},
-	["lightyear"] = {
-		idx = 16,
-		name = "#tool.gruletool.unit.lightyear",
-		sname = "#tool.gruletool.unit.slightyear",
-		lname = "#tool.gruletool.unit.llightyear",
-		convformula = function(value) return value / 372500000000000000. end,
-	},
-	["parsec"] = {
-		idx = 17,
-		name = "#tool.gruletool.unit.parsec",
-		sname = "#tool.gruletool.unit.sparsec",
-		lname = "#tool.gruletool.unit.lparsec",
-		convformula = function(value) return value / 1215000000000000000. end,
-	},
-	["kiloparsec"] = {
-		idx = 18,
-		name = "#tool.gruletool.unit.kiloparsec",
-		sname = "#tool.gruletool.unit.skiloparsec",
-		lname = "#tool.gruletool.unit.lkiloparsec",
-		convformula = function(value) return value / 1215000000000000000000 end,
-	},
-	["megaparsec"] = {
-		idx = 19,
-		name = "#tool.gruletool.unit.megaparsec",
-		sname = "#tool.gruletool.unit.smegaparsec",
-		lname = "#tool.gruletool.unit.lmegaparsec",
-		convformula = function(value) return value / 1215000000000000000000000 end,
-	},
-	["gigaparsec"] = {
-		idx = 20,
-		name = "#tool.gruletool.unit.gigaparsec",
-		sname = "#tool.gruletool.unit.sgigaparsec",
-		lname = "#tool.gruletool.unit.lgigaparsec",
-		convformula = function(value) return value / 1215000000000000000000000000 end,
-	},
-	["teraparsec"] = {
-		idx = 21,
-		name = "#tool.gruletool.unit.teraparsec",
-		sname = "#tool.gruletool.unit.steraparsec",
-		lname = "#tool.gruletool.unit.lteraparsec",
-		convformula = function(value) return value / 1215000000000000000000000000000 end,
-	},
-	["mile"] = {
-		idx = 22,
-		name = "#tool.gruletool.unit.mile",
-		sname = "#tool.gruletool.unit.smile",
-		lname = "#tool.gruletool.unit.lmile",
-		convformula = function(value) return value / 63360 end,
-	},
-	["naumile"] = {
-		idx = 23,
-		name = "#tool.gruletool.unit.naumile",
-		sname = "#tool.gruletool.unit.snaumile",
-		lname = "#tool.gruletool.unit.lnaumile",
-		convformula = function(value) return value / 72910 end,
-	},
-}
 do
 	local function IsReallyValidTable(tbl)
 		if not istable(tbl) then return false end
@@ -216,16 +51,25 @@ do
 
 	function GRule.GetModeInfo(mode)
 		local ToolModes = GRule.ToolModes
-		return IsReallyValidTable(ToolModes[mode]) and ToolModes[mode] or ToolModes["basic"]
+		if not IsReallyValidTable(ToolModes[mode]) then
+			MsgC(Color(255, 0, 0), "[-GRule-] - The chosen Operation mode '" .. mode .. "' is invalid! Using 'basic' mode...", "\n")
+			return ToolModes["basic"]
+		end
+		
+		return ToolModes[mode]
 	end
 
 	function GRule.GetUnitInfo(unit)
 		local Units = GRule.UnitConversion
-		return IsReallyValidTable(Units[unit]) and Units[unit] or Units["unit"]
+		if not IsReallyValidTable(Units[unit]) then
+			MsgC(Color(255, 0, 0), "[-GRule-] - The chosen unit '" .. unit .. "' is invalid! Using 'unit' instead...", "\n")
+			return Units["unit"]
+		end
+		return Units[unit]
 	end
 
 	--[[
-		Traces add a few units (0.03125 to be exact) on top of the hit position, causing small but not negligible errors, especially when we are measuring small distances. 
+		Traces add a few units (0.03125 to be exact) on top of the hit position, causing small but not negligible errors, especially when we are measuring small distances.
 		To mitigate this issue, we will do a small ray-plane intersection to get the precise hit position on the surface, this way we can get rid of the trace's precision issues and get a more accurate measurement.
 	]]
 	function GRule.GetPreciseHitPos(trace)
@@ -380,6 +224,43 @@ if CLIENT then
 			end
 		end
 
+		-- Highlight the entity with a specified color, this is used to highlight the entity that is being measured.
+		function GRule.HighlightEntity(ent, color)
+			if not GRule.CHighlightEnts[ent] then
+				local entdata = {
+					realcolor = ent:GetColor(),
+					realmaterial = ent:GetMaterial(),
+				}
+				GRule.CHighlightEnts[ent] = entdata
+				ent:CallOnRemove("GRule_DelightOnRemove", function()
+					GRule.CHighlightEnts[ent] = nil
+				end)
+			end
+			-- We are client. Once the player leaves the map boundaries, these are reseted, so we need to reapply the highlight to the entity.
+			ent:SetColor(color)
+			ent:SetMaterial("models/debug/debugwhite")
+
+		end
+
+		function GRule.DeHighlightAllEnts()
+			for ent, _ in pairs(GRule.CHighlightEnts) do
+				GRule.DeHighlightEntity(ent)
+			end
+			GRule.CHighlightEnts = {}
+		end
+
+		-- DeHighlight an entity that was previously highlighted, this is used to dehighlight the entity that is no longer being measured.
+		function GRule.DeHighlightEntity(ent)
+			--TrimInvalidHighlightEnts()
+			if IsValid(ent) then
+				ent:SetColor(GRule.CHighlightEnts[ent].realcolor)
+				ent:SetMaterial(GRule.CHighlightEnts[ent].realmaterial)
+				ent:RemoveCallOnRemove("GRule_DelightOnRemove")
+				GRule.CHighlightEnts[ent] = nil
+			end
+		end
+
+		-- UI related stuff.
 		function GRule.CreateUISpacer(panel)
 			local Spacer = vgui.Create("DLabel", panel)
 			Spacer:SetSize( ScrW(), 20 ) -- CONCERN: no clue how to get controlpanel Height. Using the manual way.
@@ -391,11 +272,3 @@ if CLIENT then
 		end
 	end
 end
-
-include("autorun/measurermodes/basic.lua")
-include("autorun/measurermodes/basicexperimental.lua")
-include("autorun/measurermodes/basicsnap.lua")
-include("autorun/measurermodes/hitnormal.lua")
-include("autorun/measurermodes/poshitnormal.lua")
-include("autorun/measurermodes/multiple.lua")
-include("autorun/measurermodes/space.lua")

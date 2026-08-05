@@ -152,9 +152,6 @@ do
 		panel:CheckBox("#tool.gruletool.fullnamebox", "gruletool_longname")
 		panel:ControlHelp("#tool.gruletool.fullnameboxtip")
 
-		--local parentcheck = panel:CheckBox("#tool.gruletool.posparentbox", "gruletool_posparent")
-		--panel:ControlHelp("#tool.gruletool.posparentboxtip")
-
 		GRule.CreateUISpacer(panel)
 
 		do
@@ -193,10 +190,11 @@ do
 			-- Rule Mode ComboBox
 			local modecombo = vgui.Create( "DComboBox" )
 			modecombo:SetTooltip( "#tool.gruletool.modecombotip" )
+			modecombo:SetSortItems( false )
 			panel:AddItem(modecombo)
 
 			-- Populate the array with elements containing both key and value pairs
-			for id, data in pairs(ToolModes) do
+			for id, data in SortedPairsByMemberValue(ToolModes, "position", false) do
 				modecombo:AddChoice( data.name, id )
 			end
 
@@ -204,6 +202,7 @@ do
 			local desc = panel:Help(Mode.desc)
 			function modecombo:OnSelect( _, name, data )
 				GRule.CPoints = {}
+				GRule.DeHighlightAllEnts()
 
 				SetClientData("mode", data)
 
@@ -211,7 +210,6 @@ do
 				timer.Simple(0.05,function()
 					local CMode = ToolModes[GetClientInfo("mode")]
 					desc:SetText(CMode.desc)
-					--parentcheck:SetEnabled( CMode.hasparentpoints )
 
 					createSubPanel(panel, CMode)
 
@@ -219,7 +217,6 @@ do
 				end)
 
 			end
-			--parentcheck:SetEnabled( Mode.hasparentpoints )
 
 			panel.subpanel = vgui.Create("DForm", panel)
 			panel:AddItem(panel.subpanel)
@@ -326,11 +323,17 @@ do
 			draw.SimpleText( scaletxt , "GRule_ToolScreenUnit", width / 2, 225, TitleColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
 		end
+	end
 
-
+	if CLIENT then
+		hook.Remove("PostDrawTranslucentRenderables", "GRule_3DOverlays")
+		hook.Add("PostDrawTranslucentRenderables", "GRule_3DOverlays", function()
+			local CMode = GetClientInfo("mode")
+			local modedata = GRule.GetModeInfo(CMode)
+			if isfunction(modedata.Show3DOverlays) then
+				modedata.Show3DOverlays()
+			end
+		end)
 	end
 
 end
-
-
-

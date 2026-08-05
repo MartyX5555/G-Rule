@@ -1,11 +1,13 @@
 AddCSLuaFile()
 
+local GRule = GRule
 local Mode = {}
 
 Mode.id = "space"
 Mode.name = "#tool.gruletool.space.name"
 Mode.desc = "#tool.gruletool.space.desc"
 Mode.operation = 3
+Mode.position = 4
 
 local function SendPosition(idx, PointPos, tool)
 
@@ -110,14 +112,8 @@ function Mode.CPanelCustom(panel)
 
 end
 
-local function GetClientInfo(convar)
-	local c = "gruletool_" .. convar
-	return GetConVar(c):GetString()
-end
-
-hook.Remove("PostDrawTranslucentRenderables", "GRule_SpaceRendering")
-hook.Add("PostDrawTranslucentRenderables", "GRule_SpaceRendering", function()
-	if GetClientInfo("mode") ~= Mode.id then return end
+-- The PostDraw. All of the 3d overlays are done here.
+function Mode.Show3DOverlays()
 	if not GRule.CPoints[1] and not GRule.CPoints[2] then return end
 
 	-- Between 2 Points
@@ -149,6 +145,6 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_SpaceRendering", function()
 			GRule.CreateBasicRuleRect(Point1, Point2)
 		end
 	end
-end)
+end
 
 GRule.ToolModes[Mode.id] = Mode

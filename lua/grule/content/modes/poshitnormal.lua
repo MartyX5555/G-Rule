@@ -1,11 +1,13 @@
 AddCSLuaFile()
 
+local GRule = GRule
 local Mode = {}
 
 Mode.id = "hitplane2"
 Mode.name = "#tool.gruletool.hitplane2.name"
 Mode.desc = "#tool.gruletool.hitplane2.desc"
 Mode.operation = 2
+Mode.position = 3
 
 local function SendPosition(idx, PointPos, HitNorm, tool)
 
@@ -53,16 +55,10 @@ function Mode.Reload(tool, trace)
 	GRule.CPoints = {}
 end
 
-local function GetClientInfo(convar)
-	local c = "gruletool_" .. convar
-	return GetConVar(c):GetString()
-end
-
 local mat = Material("models/wireframe")
 
-hook.Remove("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering")
-hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function()
-	if GetClientInfo("mode") ~= Mode.id then return end
+-- The PostDraw. All of the 3d overlays are done here.
+function Mode.Show3DOverlays()
 
 	-- Between 2 Points
 	do
@@ -104,6 +100,6 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_HitPlane2Rendering", function(
 			GRule.RenderCross("#tool.gruletool.overlay.endpoint", NewPos2, Color(255,0,0))
 		end
 	end
-end)
+end
 
 GRule.ToolModes[Mode.id] = Mode

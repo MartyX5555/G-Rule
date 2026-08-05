@@ -1,12 +1,13 @@
 AddCSLuaFile()
 
+local GRule = GRule
 local Mode = {}
 
-Mode.id = "basicexperimental"
+Mode.id = "basic"
 Mode.name = "Point to Point"
 Mode.desc = "#tool.gruletool.basic.desc"
 Mode.operation = 0
-Mode.hasparentpoints = true
+Mode.position = 0
 
 local function SendPosition(idx, PointPos, Entity, tool)
 
@@ -139,7 +140,7 @@ local SnapModes = {
 			for i = 1, #meshes do
 				local convex = meshes[i]
 				for j = 1, #convex do
-					local vertexPos = convex[j].pos print("vertexPos", vertexPos)
+					local vertexPos = convex[j].pos
 					local currentDistSqr = Ent:WorldToLocal(HitPos):DistToSqr(vertexPos)
 
 					-- Si esta distancia es menor a la que teníamos guardada, actualizamos
@@ -167,7 +168,7 @@ local function GetSnapData(tool)
 	local snapmode = SERVER and tool:GetClientInfo("snapmode") or GetClientInfo("snapmode")
 	local snapdata = SnapModes[snapmode]
 	if not istable(snapdata) or not next(snapdata) then
-		print("[GRule] - Invalid snapdata! Using none mode...", snapmode)
+		MsgC(Color(255, 0, 0), "[-GRule-] - The chosen snap mode '" .. snapmode .. "' is invalid! Using 'none' mode...", "\n")
 		snapdata = SnapModes["none"]
 	end
 	return snapdata
@@ -214,7 +215,7 @@ end
 function Mode.CPanelCustom(panel)
 
 	local initial_snapdata = GetSnapData()
-	panel:SetName("Extra Settings")
+	panel:SetName("Mode Settings")
 	panel:Help("Alignment Mode")
 
 	local combobox = vgui.Create("DComboBox", panel)
@@ -246,9 +247,8 @@ local function VerifyData(Point)
 	return Point
 end
 
-hook.Remove("PostDrawTranslucentRenderables", "GRule_BasicExpRendering")
-hook.Add("PostDrawTranslucentRenderables", "GRule_BasicExpRendering", function()
-	if GetClientInfo("mode") ~= Mode.id then return end
+-- The PostDraw. All of the 3d overlays are done here.
+function Mode.Show3DOverlays()
 
 	local CPoints = GRule.CPoints
 
@@ -298,6 +298,6 @@ hook.Add("PostDrawTranslucentRenderables", "GRule_BasicExpRendering", function()
 			GRule.CreateBasicRuleRect(Pos1, Pos2)
 		end
 	end
-end)
+end
 
 GRule.ToolModes[Mode.id] = Mode
