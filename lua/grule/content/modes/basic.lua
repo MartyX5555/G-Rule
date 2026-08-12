@@ -40,15 +40,14 @@ end
 
 local SnapModes = {
 	none = {
-		order = 0,
 		name = "None",
+		icon = "",
 		desc = "No snap. Allows free placement.",
 		snapfunction = function(HitPos, Ent)
 			return HitPos
 		end
 	},
 	pa = {
-		order = 1,
 		name = "PA Style",
 		desc = "Uses a Precision Alignment like Snap mode. Formely the 'Basic - Snap to prop'",
 		snapfunction = function(HitPos, Ent)
@@ -125,8 +124,7 @@ local SnapModes = {
 		end
 	},
 	vertex = {
-		order = 2,
-		name = "By Vertex",
+		name = "Vertex",
 		desc = "Uses current Entity's mesh vertex for alignment.",
 		snapfunction = function(HitPos, Ent)
 			if not IsValid(Ent) then return HitPos end
@@ -143,16 +141,37 @@ local SnapModes = {
 					local vertexPos = convex[j].pos
 					local currentDistSqr = Ent:WorldToLocal(HitPos):DistToSqr(vertexPos)
 
-					-- Si esta distancia es menor a la que teníamos guardada, actualizamos
 					if currentDistSqr < shortestDistSqr then
 						shortestDistSqr = currentDistSqr
 						SnapPos = vertexPos
-						--debugoverlay.Cross(Ent:LocalToWorld(SnapPos), 2, 1, color_white, true)
 					end
 				end
 			end
 
 			return Ent:LocalToWorld(SnapPos)
+		end
+	},
+	Attachment = {
+		name = "Attachment",
+		desc = "Uses the entity's attachments position for alignment.\n\nNote: Position parenting doesn't work well with ragdolls atm.",
+		snapfunction = function(HitPos, Ent)
+			if not IsValid(Ent) then return HitPos end
+			local Bones = Ent:GetAttachments()
+
+			local SnapPos = HitPos
+			local shortestDistSqr = math.huge
+
+			for k, Bone in pairs(Bones) do
+				local BonePosData = Ent:GetAttachment( Bone.id )
+				local BonePos = BonePosData.Pos
+				local currentDistSqr = HitPos:DistToSqr(BonePos)
+				if currentDistSqr < shortestDistSqr then
+					shortestDistSqr = currentDistSqr
+					SnapPos = BonePos
+				end
+			end
+
+			return SnapPos
 		end
 	},
 }

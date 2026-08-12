@@ -34,10 +34,11 @@ function Mode.ReceivePosition(data)
 end
 
 function Mode.LeftClick(tool, trace)
+	local OriginalHitPos = trace.HitPos
 	local HitPos = GRule.GetPreciseHitPos(trace)
 
 	local backtrace = util.TraceLine({
-		start = HitPos,
+		start = OriginalHitPos,
 		endpos = HitPos + trace.HitNormal * 1000000,
 		filter = function(ent) if ent:GetClass() ~= "player" then return true end return false end
 	})

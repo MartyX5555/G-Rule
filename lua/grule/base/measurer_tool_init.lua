@@ -206,7 +206,7 @@ if CLIENT then
 
 			local angles = dir:GetNormalized():Angle()
 			angles:Normalize()
-			local formattedang = language.GetPhrase("#tool.gruletool.overlay.angle") .. ": " .. tostring(angles)
+			local formattedang = language.GetPhrase("#tool.gruletool.overlay.angle") .. ": " .. tostring(angles) -- We will just use the default tostring for angles, since it is already formatted nicely.
 
 			cam.Start2D()
 				if Dist2D.visible then
@@ -222,6 +222,9 @@ if CLIENT then
 				GRule.CanPing = nil
 				NotifyChat(formatteddist)
 			end
+
+			GRule.FormatedDistance = formatteddist
+			GRule.Angles = string.format("%s, %s, %s", math.Round(tonumber(angles.p),3), math.Round(tonumber(angles.y),3), math.Round(tonumber(angles.r),3))
 		end
 
 		-- Highlight the entity with a specified color, this is used to highlight the entity that is being measured.

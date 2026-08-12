@@ -203,6 +203,8 @@ do
 			function modecombo:OnSelect( _, name, data )
 				GRule.CPoints = {}
 				GRule.DeHighlightAllEnts()
+				GRule.FormatedDistance = nil
+				GRule.Angles = nil
 
 				SetClientData("mode", data)
 
@@ -222,6 +224,40 @@ do
 			panel:AddItem(panel.subpanel)
 
 			createSubPanel(panel, Mode)
+		end
+
+		GRule.CreateUISpacer(panel)
+
+		local ButtonPanel = vgui.Create("DPanel", panel)
+		ButtonPanel:SetSize( panel:GetWide(), 22 )
+		ButtonPanel:SetPaintBackground( false )
+		panel:AddItem(ButtonPanel)
+
+		local LeftButton = vgui.Create("DButton", ButtonPanel)
+		LeftButton:SetText("Copy Distance")
+		LeftButton:SetIcon("icon16/map.png")
+		LeftButton:SetTooltip("Copy to clipboard the distance of the active measurement.")
+		LeftButton:Dock(LEFT)
+		function LeftButton:DoClick()
+			if not GRule.FormatedDistance then notification.AddLegacy("No distance to copy.", NOTIFY_ERROR, 5) return end
+			SetClipboardText( GRule.FormatedDistance )
+			surface.PlaySound("buttons/button15.wav")
+		end
+		local RightButton = vgui.Create("DButton", ButtonPanel)
+		RightButton:SetText("Copy Angle")
+		RightButton:SetIcon("icon16/chart_line_add.png")
+		RightButton:SetTooltip("Copy to clipboard the angle of the active measurement.")
+		RightButton:Dock(RIGHT)
+		function RightButton:DoClick()
+			if not GRule.Angles then notification.AddLegacy("No angle to copy.", NOTIFY_ERROR, 5) return end
+			SetClipboardText( GRule.Angles)
+			surface.PlaySound("buttons/button15.wav")
+		end
+		ButtonPanel:InvalidateLayout(true)
+		function ButtonPanel:PerformLayout()
+			local ButtonWidth = (ButtonPanel:GetWide() / 2) * 0.999 -- 5% margin between buttons
+			LeftButton:SetWide(ButtonWidth)
+			RightButton:SetWide(ButtonWidth)
 		end
 
 		GRule.CreateUISpacer(panel)
