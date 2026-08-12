@@ -157,6 +157,7 @@ local SnapModes = {
 		snapfunction = function(HitPos, Ent)
 			if not IsValid(Ent) then return HitPos end
 			local Bones = Ent:GetAttachments()
+			if not next(Bones) then return HitPos end
 
 			local SnapPos = HitPos
 			local shortestDistSqr = math.huge
