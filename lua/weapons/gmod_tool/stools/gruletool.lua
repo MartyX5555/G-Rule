@@ -186,7 +186,7 @@ do
 		end
 		do
 
-			local Mode = ToolModes[GetClientInfo("mode")]
+			local Mode = GRule.GetModeInfo(GetClientInfo("mode"))
 			-- Rule Mode ComboBox
 			local modecombo = vgui.Create( "DComboBox" )
 			modecombo:SetTooltip( "#tool.gruletool.modecombotip" )
@@ -234,22 +234,22 @@ do
 		panel:AddItem(ButtonPanel)
 
 		local LeftButton = vgui.Create("DButton", ButtonPanel)
-		LeftButton:SetText("Copy Distance")
+		LeftButton:SetText("#tool.gruletool.copybuttons.copydistance")
 		LeftButton:SetIcon("icon16/map.png")
-		LeftButton:SetTooltip("Copy to clipboard the distance of the active measurement.")
+		LeftButton:SetTooltip("#tool.gruletool.copybuttons.copydistance.tip")
 		LeftButton:Dock(LEFT)
 		function LeftButton:DoClick()
-			if not GRule.FormatedDistance then notification.AddLegacy("No distance to copy.", NOTIFY_ERROR, 5) return end
+			if not GRule.FormatedDistance then notification.AddLegacy("#tool.gruletool.copybuttons.error.nocopydistance", NOTIFY_ERROR, 5) return end
 			SetClipboardText( GRule.FormatedDistance )
 			surface.PlaySound("buttons/button15.wav")
 		end
 		local RightButton = vgui.Create("DButton", ButtonPanel)
-		RightButton:SetText("Copy Angle")
+		RightButton:SetText("#tool.gruletool.copybuttons.copyangle")
 		RightButton:SetIcon("icon16/chart_line_add.png")
-		RightButton:SetTooltip("Copy to clipboard the angle of the active measurement.")
+		RightButton:SetTooltip("#tool.gruletool.copybuttons.copyangle.tip")
 		RightButton:Dock(RIGHT)
 		function RightButton:DoClick()
-			if not GRule.Angles then notification.AddLegacy("No angle to copy.", NOTIFY_ERROR, 5) return end
+			if not GRule.Angles then notification.AddLegacy("#tool.gruletool.copybuttons.error.nocopyangle", NOTIFY_ERROR, 5) return end
 			SetClipboardText( GRule.Angles)
 			surface.PlaySound("buttons/button15.wav")
 		end

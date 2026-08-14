@@ -4,7 +4,7 @@ local GRule = GRule
 local Mode = {}
 
 Mode.id = "basic"
-Mode.name = "Point to Point"
+Mode.name = "#tool.gruletool.basic.name"
 Mode.desc = "#tool.gruletool.basic.desc"
 Mode.operation = 0
 Mode.position = 0
@@ -40,16 +40,15 @@ end
 
 local SnapModes = {
 	none = {
-		name = "None",
-		icon = "",
-		desc = "No snap. Allows free placement.",
+		name = "#tool.gruletool.basic.alignmode.none.name",
+		desc = "#tool.gruletool.basic.alignmode.none.desc",
 		snapfunction = function(HitPos, Ent)
 			return HitPos
 		end
 	},
 	pa = {
-		name = "PA Style",
-		desc = "Uses a Precision Alignment like Snap mode. Formely the 'Basic - Snap to prop'",
+		name = "#tool.gruletool.basic.alignmode.pa.name",
+		desc = "#tool.gruletool.basic.alignmode.pa.desc",
 		snapfunction = function(HitPos, Ent)
 			if not IsValid(Ent) then return HitPos end
 			local LPos = Ent:WorldToLocal(HitPos)
@@ -124,8 +123,8 @@ local SnapModes = {
 		end
 	},
 	vertex = {
-		name = "Vertex",
-		desc = "Uses current Entity's mesh vertex for alignment.",
+		name = "#tool.gruletool.basic.alignmode.vertex.name",
+		desc = "#tool.gruletool.basic.alignmode.vertex.desc",
 		snapfunction = function(HitPos, Ent)
 			if not IsValid(Ent) then return HitPos end
 			local physobj = Ent:GetPhysicsObject()
@@ -152,8 +151,8 @@ local SnapModes = {
 		end
 	},
 	Attachment = {
-		name = "Attachment",
-		desc = "Uses the entity's attachments position for alignment.\n\nNote: Position parenting doesn't work well with ragdolls atm.",
+		name = "#tool.gruletool.basic.alignmode.attach.name",
+		desc = "#tool.gruletool.basic.alignmode.attach.desc",
 		snapfunction = function(HitPos, Ent)
 			if not IsValid(Ent) then return HitPos end
 			local Bones = Ent:GetAttachments()
@@ -187,7 +186,10 @@ local function GetSnapData(tool)
 	local snapmode = SERVER and tool:GetClientInfo("snapmode") or GetClientInfo("snapmode")
 	local snapdata = SnapModes[snapmode]
 	if not istable(snapdata) or not next(snapdata) then
-		MsgC(Color(255, 0, 0), "[-GRule-] - The chosen snap mode '" .. snapmode .. "' is invalid! Using 'none' mode...", "\n")
+		if CLIENT then
+			local localizedtext = language.GetPhrase("#tool.gruletool.basic.alignmode.error")
+			MsgC(Color(255, 0, 0), "\n[-GRule-] - " .. string.format(localizedtext, snapmode) .. "\n")
+		end
 		snapdata = SnapModes["none"]
 	end
 	return snapdata
@@ -234,12 +236,12 @@ end
 function Mode.CPanelCustom(panel)
 
 	local initial_snapdata = GetSnapData()
-	panel:SetName("Mode Settings")
-	panel:Help("Alignment Mode")
+	panel:SetName("#tool.gruletool.basic.modesettings")
+	panel:Help("#tool.gruletool.basic.alignmode.desc")
 
 	local combobox = vgui.Create("DComboBox", panel)
 	combobox:SetValue(initial_snapdata.name)
-	combobox:SetTooltip( "Choose a snap mode." )
+	combobox:SetTooltip( "#tool.gruletool.basic.alignmode.tip" )
 	combobox:SetSortItems( false )
 	for modeid, modedata in pairs(SnapModes) do
 		combobox:AddChoice(modedata.name, modeid)

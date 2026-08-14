@@ -52,7 +52,10 @@ do
 	function GRule.GetModeInfo(mode)
 		local ToolModes = GRule.ToolModes
 		if not IsReallyValidTable(ToolModes[mode]) then
-			MsgC(Color(255, 0, 0), "[-GRule-] - The chosen Operation mode '" .. mode .. "' is invalid! Using 'basic' mode...", "\n")
+			if CLIENT then
+				local localizedtext = language.GetPhrase("#tool.gruletool.error.mode")
+				MsgC(Color(255, 0, 0), "\n[-GRule-] - " .. string.format(localizedtext, mode) .. "\n")
+			end
 			return ToolModes["basic"]
 		end
 
@@ -62,7 +65,10 @@ do
 	function GRule.GetUnitInfo(unit)
 		local Units = GRule.UnitConversion
 		if not IsReallyValidTable(Units[unit]) then
-			MsgC(Color(255, 0, 0), "[-GRule-] - The chosen unit '" .. unit .. "' is invalid! Using 'unit' instead...", "\n")
+			if CLIENT then
+				local localizedtext = language.GetPhrase("#tool.gruletool.error.unit")
+				MsgC(Color(255, 0, 0), "\n[-GRule-] - " .. string.format(localizedtext, unit) .. "\n")
+			end
 			return Units["unit"]
 		end
 		return Units[unit]
